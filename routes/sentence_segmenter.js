@@ -3,20 +3,26 @@
 //app definations
 var regex=require('./regexes');
 var app={};//app functions
+var test_output="";
+function test(d){
+	test_output=test_output+"<br>"+d;
+}
 function main(req,res){
 	console.log(req.query.q);
 	app.text=req.query.q;
 	app.periods=app.util.locate_periods(app.text);
 	app.acc=app.util.locate_acc(app.text);
-	console.log("found abbr  :"+JSON.stringify(app.acc));
-	console.log("total periods found :"+JSON.stringify(app.periods));
+	test("found abbr  :"+JSON.stringify(app.acc));
+	test("total periods found :"+JSON.stringify(app.periods));
 	app.filter_abbr();
-	console.log("removed bogus abbr periods   :"+JSON.stringify(app.periods));
-	res.send(app.periods);
+	test("final abbr periods   :"+JSON.stringify(app.periods));
+	app.segmenter();
+	test(JSON.stringify(app.segments));
+	res.send(test_output);
 	res.end();
 };
 function sentence_main(req,res){
-
+	test_output="";//clear output on browser
 
 	app.text="";//will store the input given by user
 	app.acc={};//stores acc location:String
@@ -24,6 +30,7 @@ function sentence_main(req,res){
 	app.rules={}; //will stores rules for various parsing
 	app.abbr_periods=[];//buckets used for removing unecessary periods
 	app.periods={};
+	app.segments=[];
 
 	app.util.locate_acc=function(source){
 		var dic={};
@@ -109,6 +116,31 @@ function sentence_main(req,res){
 		//takes prev and next word of . then decides sentence boundary
 
 
+	};
+	app.segmenter=function(){
+		var start=true;
+		for (var i = 0; i < app.periods.length; i++) {
+			if(start){
+				app.segments.push(app.text.substr(0,app.periods[i]));
+				if(app.periods.length===1){
+					app.segments.push(app.text.substr((parseInt(app.periods[i])+1),app.text.length-1));
+				}
+				start=false;
+			}
+			else{
+				var inc=app.periods[i+1];
+				console.log(i);
+				console.log(inc);
+				if(inc!==undefined){
+					app.segments.push(app.text.substr(app.periods[i],inc));
+				}
+				else{
+					app.segments.push(app.text.substr(app.periods[i],app.text.length-1));
+				}
+				
+			}
+			
+		};
 	};
 
 	main(req,res);
