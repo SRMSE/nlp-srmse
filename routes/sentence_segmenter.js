@@ -42,9 +42,11 @@ function sentence_main(req,res){
 			var d;
 			var ree=/\./g;
 			while(d=ree.exec(m[0].trim())){
-				app.abbr_periods.push(m.index+d.index);//keeping tracks of dots between an abbr
+				var t=[];
+				t.push(m.index+d.index);
+				t.push(m[0].trim());
+				app.abbr_periods.push(t);//keeping tracks of dots between an abbr
 			}
-			
 		}
 		return dic;
 	};
@@ -86,27 +88,38 @@ function sentence_main(req,res){
 		for (var i = 0; i < app.abbr_periods.length; i++) {
 			//for abbr starting at para start
 			//ex   St. Michael's Church is on 5th st. near the light.
-			if(app.abbr_periods[i]<5){
-				delete app.periods[app.abbr_periods[i]];
+			if(app.abbr_periods[i][0]<5){
+				delete app.periods[app.abbr_periods[i][0]];
 				continue;
 			}
 
 
+		
+			var temp=app.text[app.abbr_periods[i][0]+1];
+			var tempp=app.text[app.abbr_periods[i][0]+2];
+			var f=app.abbr_periods[i][1][0];
+			var first=app.abbr_periods[i][1];
+			console.log(f);
+			console.log(temp);
+			console.log(tempp);
+			
 			//to skip things like
 			//Let's ask Jane and co. They should know.
 			//["Let's ask Jane and co.", "They should know."]
-
-			//but should not 
-
-			//
-			//I can see Mt. Fuji from here.
-			var first=app.text[app.abbr_periods[i]];
-			var temp=app.text[app.abbr_periods[i]+1];
-			var tempp=app.text[app.abbr_periods[i]+2];
-			if(temp!==undefined && temp===" " && first===first.toLowerCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
+			if(temp!==undefined && temp===" " && f===f.toLowerCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
 				continue;
 			}
-			delete app.periods[app.abbr_periods[i]];
+				//but should not 
+
+			//I can see Mt. Fuji from here.
+			if(temp!==undefined && temp===" " && first===first.toUpperCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
+				continue;
+			}
+			if(temp!==undefined && temp===" " && f===f.toUpperCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
+				delete app.periods[app.abbr_periods[i][0]];
+				continue;
+			}
+			delete app.periods[app.abbr_periods[i][0]];
 		};
 		app.periods=Object.keys(app.periods);//converting to list now
 
@@ -118,26 +131,22 @@ function sentence_main(req,res){
 
 	};
 	app.segmenter=function(){
+		var temp=[0];
 		var start=true;
-		for (var i = 0; i < app.periods.length; i++) {
+		var temp=temp.concat(app.periods);//adding 0 and last index to create pairs of periods
+		for (var i = 0; i < temp.length; i++) {
 			if(start){
-				app.segments.push(app.text.substr(0,app.periods[i]));
-				if(app.periods.length===1){
-					app.segments.push(app.text.substr((parseInt(app.periods[i])+1),app.text.length-1));
+				var ne=temp[i];//as we added . in begining
+				if(temp[i+1]!==undefined){
+					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
 				}
 				start=false;
 			}
 			else{
-				var inc=app.periods[i+1];
-				console.log(i);
-				console.log(inc);
-				if(inc!==undefined){
-					app.segments.push(app.text.substr(app.periods[i],inc));
+				var ne=parseInt(temp[i])+1;//as we added . in begining
+				if(temp[i+1]!==undefined){
+					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
 				}
-				else{
-					app.segments.push(app.text.substr(app.periods[i],app.text.length-1));
-				}
-				
 			}
 			
 		};
