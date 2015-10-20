@@ -6,41 +6,51 @@ var app={};//app functions
 function main(req,res){
 	console.log(req.query.q);
 	app.text=req.query.q;
-	var ind=app.util.locate_periods(app.text);
-	app.util.locate_acc(app.text);
-	res.send(ind);
+	app.periods=app.util.locate_periods(app.text);
+	app.acc=app.util.locate_acc(app.text);
+	console.log(app.acc);
+	console.log(app.periods);
+	app.filter_abbr();
+	console.log(app.periods);
+	res.send(app.periods);
 	res.end();
 };
 function sentence_main(req,res){
 
 
 	app.text="";//will store the input given by user
-	app.acc={};//stores acc string:location
+	app.acc={};//stores acc location:String
 	app.util={};//stores util functions
 	app.rules={}; //will stores rules for various parsing
-	app.regexes={};//regex store
-
+	app.abbr_periods=[];//buckets used for removing unecessary periods
+	app.periods={};
 
 	app.util.locate_acc=function(source){
+		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
 		var m;
 		while(m=regex.store.acc.exec(source)){
-			app.acc[m[0].trim()]=m.index;
+			dic[m.index]=m[0].trim();
+			var d;
+			var ree=/\./g;
+			while(d=ree.exec(m[0].trim())){
+				app.abbr_periods.push(m.index+d.index);
+			}
+			
 		}
-		console.log(app.acc);
-
+		return dic;
 	};
 
 
 	app.util.locate_periods=function(source){
-	  var result = [];
+	  var result = {};
 	  var find=".";
 	  for(i=0;i<source.length; ++i) {
 	    // If you want to search case insensitive use 
 	    // if (source.substring(i, i + find.length).toLowerCase() == find) {
 	    if (source.substring(i, i + find.length) == find) {
-	      result.push(i);
+	      result[i]="";
 	    }
 	  }
 	  return result;
@@ -60,6 +70,21 @@ function sentence_main(req,res){
 		words.push(w);
 	};
 	return words;
+
+
+	};
+
+	app.filter_abbr=function(){
+		//removes those periods which are part of abbr
+		for (var i = 0; i < app.abbr_periods.length; i++) {
+			delete app.periods[app.abbr_periods[i]];
+		};
+		app.periods=Object.keys(app.periods);//converting to list now
+
+	};
+
+	app.acceptor=function(prev,next){
+		//takes prev and next word of . then decides sentence boundary
 
 
 	};
