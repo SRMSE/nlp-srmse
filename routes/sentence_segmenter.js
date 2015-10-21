@@ -2,6 +2,8 @@
 */
 //app definations
 var regex=require('./regexes');
+var segment_rules=require('./segmenter/rules');
+var corpus=require('./corpus/corpus');
 var test_output="";
 function test(d){
 	test_output=test_output+"<br>"+d;
@@ -13,7 +15,7 @@ function sentence_main(req,res){
 	app.text="";//will store the input given by user
 	app.acc={};//stores acc location:String
 	app.util={};//stores util functions
-	app.rules={}; //will stores rules for various parsing
+	app.rules=segment_rules.rules;
 	app.abbr_periods=[];//buckets used for removing unecessary periods
 	app.periods={};
 	app.segments=[];
@@ -24,12 +26,30 @@ function sentence_main(req,res){
 		//can be U.S.A or USA
 		var m;
 		while(m=regex.store.acc.exec(source)){
-			dic[m.index]=m[0].trim();
+			if(m[0][0]===" "){
+				//javascript regexes do no support look behinds
+				//need to change regex for regexes starting with space
+				//will see later
+				dic[m.index+1]=m[0].trim();
+			}
+			else{
+				dic[m.index]=m[0].trim();
+			}
+			
 			var d;
 			var ree=/\./g;
 			while(d=ree.exec(m[0].trim())){
 				var t=[];
-				t.push(m.index+d.index);
+				if(m[0][0]===" "){
+					//javascript regexes do no support look behinds
+					//need to change regex for regexes starting with space
+					//will see later
+					t.push(m.index+d.index+1);
+				}
+				else{
+					t.push(m.index+d.index);
+				}
+				console.log(t);
 				t.push(m[0].trim());
 				app.abbr_periods.push(t);//keeping tracks of dots between an abbr
 			}
@@ -39,41 +59,22 @@ function sentence_main(req,res){
 
 
 	app.util.locate_periods=function(source){
-	  var result = {};
-	  var find=".";
-	  for(i=0;i<source.length; ++i) {
-	    // If you want to search case insensitive use 
-	    // if (source.substring(i, i + find.length).toLowerCase() == find) {
-	    if (source.substring(i, i + find.length) == find) {
-	      result[i]="";
-	    }
-	  }
-	  return result;
+		//common method to find punc then divide locations
+		var dic={};
+	  var m;
+		while(m=regex.store.periods.exec(source)){
+			if(m[0].trim()==="."){
+				dic[m.index]=m[0].trim();
+			}
+			else if(m[0].trim()==="?" && m[0].trim()==="!"){
+				app.ques.push(m.index);
+			}
+			
+			
+		}
+		return dic;
 	};
-	app.util.locate_ques=function(source){
-	  var result = [];
-	  var find="?";
-	  for(i=0;i<source.length; ++i) {
-	    // If you want to search case insensitive use 
-	    // if (source.substring(i, i + find.length).toLowerCase() == find) {
-	    if (source.substring(i, i + find.length) == find) {
-	      result.push(i);
-	    }
-	  }
-	  return result;
-	};
-	app.util.locate_exclamation=function(source){
-	  var result = [];
-	  var find="!";
-	  for(i=0;i<source.length; ++i) {
-	    // If you want to search case insensitive use 
-	    // if (source.substring(i, i + find.length).toLowerCase() == find) {
-	    if (source.substring(i, i + find.length) == find) {
-	      result.push(i);
-	    }
-	  }
-	  return result;
-	};
+
 	app.util.replace_double_punc=function(source){
 	  	var m=regex.store.double_punc;
 	  	app.text=source.replace(m,"?");
@@ -109,34 +110,17 @@ function sentence_main(req,res){
 				continue;
 			}
 
-
+			
+			for (var key in app.rules) {
+				if(app.rules[key](app.abbr_periods[i],app.text,corpus)){
+					//delete the period
+					delete app.periods[app.abbr_periods[i][0]];
+					break;
+				}
+			};
 		
-			var temp=app.text[app.abbr_periods[i][0]+1];
-			var tempp=app.text[app.abbr_periods[i][0]+2];
-			var f=app.abbr_periods[i][1][0];
-			var first=app.abbr_periods[i][1];
-			
-			//to skip things like
-			//Let's ask Jane and co. They should know.
-			//["Let's ask Jane and co.", "They should know."]
-				var one_char_abbr=first.replace(/\./g,'');
-			if(temp!==undefined && temp===" " && f===f.toLowerCase() && one_char_abbr.length>1 && tempp!==undefined && tempp===tempp.toUpperCase()){
-				continue;
-			}
-				//but should not 
-			
-			//I can see Mt. Fuji from here.
-			if(temp!==undefined && temp===" " && first===first.toUpperCase() && one_char_abbr.length>1 && tempp!==undefined && tempp===tempp.toUpperCase()){
-				continue;
-			}
-			//Jonas E. Smith
-			
-			if(temp!==undefined && temp===" " && f===f.toUpperCase()  && tempp!==undefined && tempp===tempp.toUpperCase()){
-				delete app.periods[app.abbr_periods[i][0]];
-				continue;
-			}
-			delete app.periods[app.abbr_periods[i][0]];
 		};
+
 		app.periods=Object.keys(app.periods);//converting to list now
 
 	};
@@ -150,13 +134,18 @@ function sentence_main(req,res){
 		var temp=[0];
 		var start=true;
 		
-		var temp=temp.concat(app.periods.concat(app.ques).concat(app.exclamation)).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
-		
+		var temp=temp.concat(app.periods).concat(app.ques).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
+		console.log(temp);
 		for (var i = 0; i < temp.length; i++) {
 			if(start){
 				var ne=temp[i];//as we added . in begining
 				if(temp[i+1]!==undefined){
 					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
+				}
+				else{
+					if(ne<=app.text.length-1){
+						app.segments.push(app.text.substr(ne,app.text.length-1));
+					}
 				}
 				start=false;
 			}
@@ -164,6 +153,11 @@ function sentence_main(req,res){
 				var ne=parseInt(temp[i])+1;//as we added . in begining
 				if(temp[i+1]!==undefined){
 					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
+				}
+				else{
+					if(ne<=app.text.length-1){
+						app.segments.push(app.text.substr(ne,app.text.length-1));
+					}
 				}
 			}
 			
@@ -178,8 +172,6 @@ function sentence_main(req,res){
 		app.util.replace_double_punc(app.text);
 		test("After normailzation  :  "+app.text);
 		app.periods=app.util.locate_periods(app.text);
-		app.ques=app.util.locate_ques(app.text);
-		app.exclamation=app.util.locate_exclamation(app.text);
 		app.acc=app.util.locate_acc(app.text);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("total periods found :"+JSON.stringify(app.periods));
