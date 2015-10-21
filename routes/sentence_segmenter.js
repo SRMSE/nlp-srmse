@@ -2,26 +2,12 @@
 */
 //app definations
 var regex=require('./regexes');
-var app={};//app functions
 var test_output="";
 function test(d){
 	test_output=test_output+"<br>"+d;
 }
-function main(req,res){
-	console.log(req.query.q);
-	app.text=req.query.q;
-	app.periods=app.util.locate_periods(app.text);
-	app.acc=app.util.locate_acc(app.text);
-	test("found abbr  :"+JSON.stringify(app.acc));
-	test("total periods found :"+JSON.stringify(app.periods));
-	app.filter_abbr();
-	test("final abbr periods   :"+JSON.stringify(app.periods));
-	app.segmenter();
-	test(JSON.stringify(app.segments));
-	res.send(test_output);
-	res.end();
-};
 function sentence_main(req,res){
+	var app={};//app functions
 	test_output="";//clear output on browser
 
 	app.text="";//will store the input given by user
@@ -31,7 +17,7 @@ function sentence_main(req,res){
 	app.abbr_periods=[];//buckets used for removing unecessary periods
 	app.periods={};
 	app.segments=[];
-
+	app.ques=[];
 	app.util.locate_acc=function(source){
 		var dic={};
 		//acronyms are short hand from starting char of each words
@@ -63,6 +49,36 @@ function sentence_main(req,res){
 	    }
 	  }
 	  return result;
+	};
+	app.util.locate_ques=function(source){
+	  var result = [];
+	  var find="?";
+	  for(i=0;i<source.length; ++i) {
+	    // If you want to search case insensitive use 
+	    // if (source.substring(i, i + find.length).toLowerCase() == find) {
+	    if (source.substring(i, i + find.length) == find) {
+	      result.push(i);
+	    }
+	  }
+	  return result;
+	};
+	app.util.locate_exclamation=function(source){
+	  var result = [];
+	  var find="!";
+	  for(i=0;i<source.length; ++i) {
+	    // If you want to search case insensitive use 
+	    // if (source.substring(i, i + find.length).toLowerCase() == find) {
+	    if (source.substring(i, i + find.length) == find) {
+	      result.push(i);
+	    }
+	  }
+	  return result;
+	};
+	app.util.replace_double_punc=function(source){
+	  	var m=regex.store.double_punc;
+	  	app.text=source.replace(m,"?");
+		
+		
 	};
 
 
@@ -99,23 +115,23 @@ function sentence_main(req,res){
 			var tempp=app.text[app.abbr_periods[i][0]+2];
 			var f=app.abbr_periods[i][1][0];
 			var first=app.abbr_periods[i][1];
-			console.log(f);
-			console.log(temp);
-			console.log(tempp);
 			
 			//to skip things like
 			//Let's ask Jane and co. They should know.
 			//["Let's ask Jane and co.", "They should know."]
-			if(temp!==undefined && temp===" " && f===f.toLowerCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
+				var one_char_abbr=first.replace(/\./g,'');
+			if(temp!==undefined && temp===" " && f===f.toLowerCase() && one_char_abbr.length>1 && tempp!==undefined && tempp===tempp.toUpperCase()){
 				continue;
 			}
 				//but should not 
-
+			
 			//I can see Mt. Fuji from here.
-			if(temp!==undefined && temp===" " && first===first.toUpperCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
+			if(temp!==undefined && temp===" " && first===first.toUpperCase() && one_char_abbr.length>1 && tempp!==undefined && tempp===tempp.toUpperCase()){
 				continue;
 			}
-			if(temp!==undefined && temp===" " && f===f.toUpperCase() && tempp!==undefined && tempp===tempp.toUpperCase()){
+			//Jonas E. Smith
+			
+			if(temp!==undefined && temp===" " && f===f.toUpperCase()  && tempp!==undefined && tempp===tempp.toUpperCase()){
 				delete app.periods[app.abbr_periods[i][0]];
 				continue;
 			}
@@ -133,7 +149,9 @@ function sentence_main(req,res){
 	app.segmenter=function(){
 		var temp=[0];
 		var start=true;
-		var temp=temp.concat(app.periods);//adding 0 and last index to create pairs of periods
+		
+		var temp=temp.concat(app.periods.concat(app.ques).concat(app.exclamation)).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
+		
 		for (var i = 0; i < temp.length; i++) {
 			if(start){
 				var ne=temp[i];//as we added . in begining
@@ -151,7 +169,27 @@ function sentence_main(req,res){
 			
 		};
 	};
-
+	app.util.sortNumber=function(a,b){
+	  return a - b;
+	};
+	function main(req,res){
+		console.log(req.query.q);
+		app.text=req.query.q;
+		app.util.replace_double_punc(app.text);
+		test("After normailzation  :  "+app.text);
+		app.periods=app.util.locate_periods(app.text);
+		app.ques=app.util.locate_ques(app.text);
+		app.exclamation=app.util.locate_exclamation(app.text);
+		app.acc=app.util.locate_acc(app.text);
+		test("found abbr  :"+JSON.stringify(app.acc));
+		test("total periods found :"+JSON.stringify(app.periods));
+		app.filter_abbr();
+		test("final abbr periods   :"+JSON.stringify(app.periods));
+		app.segmenter();
+		test(JSON.stringify(app.segments));
+		res.send(test_output);
+		res.end();
+	};
 	main(req,res);
 };
 
