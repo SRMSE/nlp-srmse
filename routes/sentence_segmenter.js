@@ -23,6 +23,7 @@ function sentence_main(req,res){
 	app.segments=[];
 	app.ques=[];
 	app.emails={};
+	app.urls={};
 	app.modified_text_to_search_periods="";
 	app.util.locate_acc=function(source){
 		var dic={};
@@ -39,6 +40,17 @@ function sentence_main(req,res){
 				var blanks=m[0].replace(/./g,'#');
 				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
 				app.emails[m[0].trim()]=t;
+				continue;
+			}
+			if(m[0].trim().indexOf("http")>=0 || m[0].trim().indexOf("ftp")>=0){
+				//for detecting urls
+				console.log('herer');
+				var t=[];
+				t.push(m.index);//starting index
+				t.push(m.index+m[0].length);//end index
+				var blanks=m[0].replace(/./g,'#');
+				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
+				app.urls[m[0].trim()]=t;
 				continue;
 			}
 			if(m[0][0]===" "){
@@ -257,7 +269,7 @@ function sentence_main(req,res){
 	function main(req,res){
 		console.log(req.query.q);
 		app.text=req.query.q;
-		date.date.init(app.text);
+		//date.date.init(app.text);
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);
 		app.util.replace_double_punc(app.text);
@@ -267,6 +279,7 @@ function sentence_main(req,res){
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("found emails :"+JSON.stringify(app.emails));
+		test("found urls :"+JSON.stringify(app.urls))
 		test("total periods found :"+JSON.stringify(app.periods));
 		app.filter_abbr();
 		test("final abbr periods   :"+JSON.stringify(app.periods));
