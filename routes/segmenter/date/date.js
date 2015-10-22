@@ -14,6 +14,13 @@ app.init=function(query){
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(re,mask);
 		}
+		while(m=reg.store.word_month_without_year.exec(q))
+		{
+				dic[m[0]]=[m.index,m.index+m[0].length]
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
+		}
 		while(m=reg.store.num_date_format.exec(q))
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
@@ -42,6 +49,7 @@ app.init=function(query){
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(re,mask);
 		}
+		dic["query"]=q;
 		console.log(dic);
 		return dic;
 };
