@@ -103,6 +103,9 @@ function sentence_main(req,res){
 	app.filter_abbr=function(){
 		//removes those periods which are part of abbr
 		for (var i = 0; i < app.abbr_periods.length; i++) {
+			//app.abbr_periods is a tuple
+			//period_location,detected abbr
+
 			//for abbr starting at para start
 			//ex   St. Michael's Church is on 5th st. near the light.
 			if(app.abbr_periods[i][0]<5){
@@ -112,7 +115,9 @@ function sentence_main(req,res){
 
 			
 			for (var key in app.rules) {
-				if(app.rules[key](app.abbr_periods[i],app.text,corpus)){
+				var after_word=app.util.find_next_word(app.text,app.abbr_periods[i][0]);
+				var before_word=app.util.find_prev_word(app.text,app.abbr_periods[i][0]);
+				if(app.rules[key](app.abbr_periods[i],app.text,corpus,before_word,after_word)){
 					//delete the period
 					delete app.periods[app.abbr_periods[i][0]];
 					break;
@@ -165,6 +170,58 @@ function sentence_main(req,res){
 	};
 	app.util.sortNumber=function(a,b){
 	  return a - b;
+	};
+	app.util.find_prev_word=function(source,index){
+		var str="";
+		var first=true;//to skip first space found
+		for (var i = index; i >= 0; i--) {
+			//skip till first space found
+			if(source[i]===undefined){
+				break;
+			}
+			if(source[i]!==undefined && source[i]!==" " && first){
+				continue;
+			}
+			else if(!first){
+
+			}
+			else{
+				first=false;
+				continue;
+			}
+			if(source[i]!==undefined && source[i]===" " && !first){
+				break;
+			}
+			str=source[i]+str;
+		};
+		return str;
+
+	};
+	app.util.find_next_word=function(source,index){
+		var str="";
+		var first=true;//to skip first space found
+		for (var i = index; index<source.length; i++) {
+			//skip till first space found
+			if(source[i]===undefined){
+				break;
+			}
+			if(source[i]!==undefined && source[i]!==" " && first){
+				continue;
+			}
+			else if(!first){
+
+			}
+			else{
+				first=false;
+				continue;
+			}
+			if(source[i]!==undefined && source[i]===" " && !first){
+				break;
+			}
+			str=str+source[i];
+		};
+		return str;
+
 	};
 	function main(req,res){
 		console.log(req.query.q);
