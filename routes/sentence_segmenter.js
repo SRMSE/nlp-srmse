@@ -22,18 +22,23 @@ function sentence_main(req,res){
 	app.periods={};
 	app.segments=[];
 	app.ques=[];
-	app.emails=[];
+	app.emails={};
+	app.modified_text_to_search_periods="";
 	app.util.locate_acc=function(source){
 		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
 		var m;
 		while(m=regex.store.acc.exec(source)){
-			if(m[0].trim().indexOf("@")){
+			if(m[0].trim().indexOf("@")>=0){
+				//for detecting emails
+				//replace emails to blank in this search to avoid getting their periods
 				var t=[];
-				t.push(m[0].trim());
-				t.push(m.index);
-				app.emails.push(t);
+				t.push(m.index);//starting index
+				t.push(m.index+m[0].length);//end index
+				var blanks=m[0].replace(/./g,'#');
+				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
+				app.emails[m[0].trim()]=t;
 				continue;
 			}
 			if(m[0][0]===" "){
@@ -73,11 +78,13 @@ function sentence_main(req,res){
 				app.abbr_periods.push(t);//keeping tracks of dots between an abbr
 			}
 		}
+		console.log(app.modified_text_to_search_periods);
 		return dic;
 	};
 
 
 	app.util.locate_periods=function(source){
+
 		//common method to find punc then divide locations
 		var dic={};
 	  var m;
@@ -251,10 +258,13 @@ function sentence_main(req,res){
 		console.log(req.query.q);
 		app.text=req.query.q;
 		date.date.init(app.text);
+		app.original_text=app.text;
+		test("original_text:  "+app.original_text);
 		app.util.replace_double_punc(app.text);
 		test("After normailzation  :  "+app.text);
-		app.periods=app.util.locate_periods(app.text);
+		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);
+		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("found emails :"+JSON.stringify(app.emails));
 		test("total periods found :"+JSON.stringify(app.periods));
