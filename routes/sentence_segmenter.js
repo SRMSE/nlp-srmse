@@ -40,17 +40,26 @@ function sentence_main(req,res){
 			var ree=/\./g;
 			while(d=ree.exec(m[0].trim())){
 				var t=[];
+				var ind;
 				if(m[0][0]===" "){
 					//javascript regexes do no support look behinds
 					//need to change regex for regexes starting with space
 					//will see later
 					t.push(m.index+d.index+1);
+					ind=m.index+d.index+1;
 				}
 				else{
 					t.push(m.index+d.index);
+					ind=m.index+d.index;
 				}
-				console.log(t);
 				t.push(m[0].trim());
+				if(app.text[ind-1]===" " || app.text[ind+1]===" " || app.text[ind-1]===undefined || app.text[ind+1]===undefined){
+					//end period
+					t.push(false);
+				}
+				else{
+					t.push(true);
+				}
 				app.abbr_periods.push(t);//keeping tracks of dots between an abbr
 			}
 		}
@@ -63,7 +72,7 @@ function sentence_main(req,res){
 		var dic={};
 	  var m;
 		while(m=regex.store.periods.exec(source)){
-			if(m[0].trim()==="."){
+			if(m[0].trim()==="." && app.text[m.index+1]!==")"){//  .) should not be considered
 				dic[m.index]=m[0].trim();
 			}
 			else if(m[0].trim()==="?" && m[0].trim()==="!"){
@@ -117,7 +126,10 @@ function sentence_main(req,res){
 			for (var key in app.rules) {
 				var after_word=app.util.find_next_word(app.text,app.abbr_periods[i][0]);
 				var before_word=app.util.find_prev_word(app.text,app.abbr_periods[i][0]);
-				if(app.rules[key](app.abbr_periods[i],app.text,corpus,before_word,after_word)){
+				var middle_period=app.abbr_periods[i][2];
+				console.log(before_word);
+				console.log(after_word);
+				if(app.rules[key](app.abbr_periods[i],app.text,corpus,before_word,after_word,middle_period)){
 					//delete the period
 					delete app.periods[app.abbr_periods[i][0]];
 					break;
