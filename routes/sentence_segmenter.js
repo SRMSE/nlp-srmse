@@ -20,12 +20,20 @@ function sentence_main(req,res){
 	app.periods={};
 	app.segments=[];
 	app.ques=[];
+	app.emails=[];
 	app.util.locate_acc=function(source){
 		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
 		var m;
 		while(m=regex.store.acc.exec(source)){
+			if(m[0].trim().indexOf("@")){
+				var t=[];
+				t.push(m[0].trim());
+				t.push(m.index);
+				app.emails.push(t);
+				continue;
+			}
 			if(m[0][0]===" "){
 				//javascript regexes do no support look behinds
 				//need to change regex for regexes starting with space
@@ -72,12 +80,14 @@ function sentence_main(req,res){
 		var dic={};
 	  var m;
 		while(m=regex.store.periods.exec(source)){
+			
 			if(m[0].trim()==="." && app.text[m.index+1]!==")"){//  .) should not be considered
 				dic[m.index]=m[0].trim();
 			}
 			else if(m[0].trim()==="?" && m[0].trim()==="!"){
 				app.ques.push(m.index);
 			}
+		
 			
 			
 		}
@@ -243,6 +253,7 @@ function sentence_main(req,res){
 		app.periods=app.util.locate_periods(app.text);
 		app.acc=app.util.locate_acc(app.text);
 		test("found abbr  :"+JSON.stringify(app.acc));
+		test("found emails :"+JSON.stringify(app.emails));
 		test("total periods found :"+JSON.stringify(app.periods));
 		app.filter_abbr();
 		test("final abbr periods   :"+JSON.stringify(app.periods));
