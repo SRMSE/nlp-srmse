@@ -24,11 +24,25 @@ function sentence_main(req,res){
 	app.ques=[];
 	app.emails={};
 	app.urls={};
+	app.domains={};
 	app.modified_text_to_search_periods="";
 	app.util.locate_acc=function(source){
 		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
+		var m1;
+		while(m1=regex.store.domains.exec(source)){
+			//for detecting domain names
+			//replace domain names to blank in this search to avoid getting their periods
+			if(m1[0][0]!=="/"){
+					var t=[];
+					t.push(m1.index);//starting index
+					t.push(m1.index+m1[0].length);//end index
+					var blanks=m1[0].replace(/./g,'#');
+					app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m1[0],blanks);
+					app.domains[m1[0].trim()]=t;
+			}
+		}
 		var m;
 		while(m=regex.store.acc.exec(source)){
 			if(m[0].trim().indexOf("@")>=0){
@@ -192,7 +206,7 @@ function sentence_main(req,res){
 				}
 				else{
 					if(ne<=app.text.length-1){
-						app.segments.push(app.text.substr(ne,app.text.length-1));
+						app.segments.push(app.text.substr(ne,app.text.length));
 					}
 				}
 				start=false;
@@ -204,7 +218,7 @@ function sentence_main(req,res){
 				}
 				else{
 					if(ne<=app.text.length-1){
-						app.segments.push(app.text.substr(ne,app.text.length-1));
+						app.segments.push(app.text.substr(ne,app.text.length));
 					}
 				}
 			}
@@ -279,7 +293,8 @@ function sentence_main(req,res){
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("found emails :"+JSON.stringify(app.emails));
-		test("found urls :"+JSON.stringify(app.urls))
+		test("found urls :"+JSON.stringify(app.urls));
+		test("found domains :"+JSON.stringify(app.domains));
 		test("total periods found :"+JSON.stringify(app.periods));
 		app.filter_abbr();
 		test("final abbr periods   :"+JSON.stringify(app.periods));

@@ -9,6 +9,9 @@ var store={
 	"double_punc":/[\.\?\!]{2,}/g,
 	"acc":/(([a-zA-Z]\.)+(([a-zA-Z]\s)|([a-zA-Z]\.)))|(([A-Z]{2,}?)\s)|((\s[a-zA-Z]{2,3}\.\s|^[a-zA-Z]{2,3}\.\s))|(\.[a-z]{2,5}\s)|(\s[a-zA-Z]\.\s)|([a-zA-Z]{2}\.'s)|([a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+?(\.[a-zA-Z]+)+)|((https|http|ftp)(:\/\/)((.*?):(.*?)(\/|$)|(.*?)(\/|$))((.*?)\/)*(\s|(.*?)(\s|$)|($)))/g,
 	"email":/[a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+?(\.[a-zA-Z]+)+/g,
-	"url":/(https|http|ftp)(:\/\/)((.*?):(.*?)(\/|$)|(.*?)(\/|$))((.*?)\/)*(\s|(.*?)(\s|$)|($))/g
+	"url":/(https|http|ftp)(:\/\/)((.*?):(.*?)(\/|$)|(.*?)(\/|$))((.*?)\/)*(\s|(.*?)(\s|$)|($))/g,
+	"domains":/((\/|)([^\s/]*?)\.)+?([^/]*?)(\s|$)/g
 };
 exports.store=store;
+//the regex for domains also matches /hello.txt as js does not support negative look behinds
+//we will get more than we want and filter later
