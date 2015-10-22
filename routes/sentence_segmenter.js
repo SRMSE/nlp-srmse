@@ -283,7 +283,7 @@ function sentence_main(req,res){
 	function main(req,res){
 		console.log(req.query.q);
 		app.text=req.query.q;
-		//date.date.init(app.text);
+		date.date.init(app.text);
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);
 		app.util.replace_double_punc(app.text);
