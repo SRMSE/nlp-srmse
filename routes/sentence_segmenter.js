@@ -124,7 +124,7 @@ function sentence_main(req,res){
 			if(m[0].trim()==="." && app.text[m.index+1]!==")"){//  .) should not be considered
 				dic[m.index]=m[0].trim();
 			}
-			else if(m[0].trim()==="?" && m[0].trim()==="!"){
+			else if(m[0].trim()==="?" || m[0].trim()==="!"){
 				app.ques.push(m.index);
 			}
 		
