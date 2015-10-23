@@ -50,7 +50,6 @@ app.init=function(query){
 				q=q.replace(re,mask);
 		}
 		dic["query"]=q;
-		console.log(dic);
 		return dic;
 };
 exports.date=app;

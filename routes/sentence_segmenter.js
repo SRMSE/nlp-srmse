@@ -26,12 +26,19 @@ function sentence_main(req,res){
 	app.urls={};
 	app.domains={};
 	app.modified_text_to_search_periods="";
+	app.dates={};
+	var date_output={};
 	app.util.locate_acc=function(source){
 		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
+		date_output=date.date.init(source);
+		app.modified_text_to_search_periods=date_output['query'];
+		delete date_output['query'];
+		app.dates=date_output;
+		test('Found dates :'+JSON.stringify(app.dates));
 		var m1;
-		while(m1=regex.store.domains.exec(source)){
+		while(m1=regex.store.domains.exec(app.modified_text_to_search_periods)){
 			//for detecting domain names
 			//replace domain names to blank in this search to avoid getting their periods
 			if(m1[0][0]!=="/"){
@@ -44,7 +51,7 @@ function sentence_main(req,res){
 			}
 		}
 		var m;
-		while(m=regex.store.acc.exec(source)){
+		while(m=regex.store.acc.exec(app.modified_text_to_search_periods)){
 			if(m[0].trim().indexOf("@")>=0){
 				//for detecting emails
 				//replace emails to blank in this search to avoid getting their periods
@@ -58,7 +65,6 @@ function sentence_main(req,res){
 			}
 			if(m[0].trim().indexOf("http")>=0 || m[0].trim().indexOf("ftp")>=0){
 				//for detecting urls
-				console.log('herer');
 				var t=[];
 				t.push(m.index);//starting index
 				t.push(m.index+m[0].length);//end index
@@ -104,7 +110,6 @@ function sentence_main(req,res){
 				app.abbr_periods.push(t);//keeping tracks of dots between an abbr
 			}
 		}
-		console.log(app.modified_text_to_search_periods);
 		return dic;
 	};
 
@@ -283,7 +288,6 @@ function sentence_main(req,res){
 	function main(req,res){
 		console.log(req.query.q);
 		app.text=req.query.q;
-		date.date.init(app.text);
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);
 		app.util.replace_double_punc(app.text);
