@@ -28,6 +28,7 @@ function sentence_main(req,res){
 	app.modified_text_to_search_periods="";
 	app.dates={};
 	app.currency={};
+	app.bullets={};
 	var date_output={};
 	var currency_output={};
 	app.util.locate_acc=function(source){
@@ -47,6 +48,7 @@ function sentence_main(req,res){
 		app.dates=date_output;
 		test('Found dates :'+JSON.stringify(app.dates));
 		var m1;
+
 		while(m1=regex.store.domains.exec(app.modified_text_to_search_periods)){
 			//for detecting domain names
 			//replace domain names to blank in this search to avoid getting their periods
@@ -59,7 +61,7 @@ function sentence_main(req,res){
 					app.domains[m1[0].trim()]=t;
 			}
 		}
-		var m;
+
 		while(m=regex.store.email.exec(app.modified_text_to_search_periods)){
 				//for detecting emails
 				//replace emails to blank in this search to avoid getting their periods
@@ -99,6 +101,7 @@ function sentence_main(req,res){
 				app.urls[m[0].trim()]=t;
 				continue;
 		}
+		var temp_for_bullets=app.modified_text_to_search_periods;
 		while(m=regex.store.acc.exec(app.modified_text_to_search_periods)){
 
 			
@@ -111,7 +114,10 @@ function sentence_main(req,res){
 			else{
 				dic[m.index]=m[0].trim();
 			}
-			
+			var temp=m[0];
+			var blanks=temp.replace(/./g,"#");
+			temp_for_bullets=temp_for_bullets.replace(temp,blanks);
+
 			var d;
 			var ree=/\./g;
 			while(d=ree.exec(m[0].trim())){
@@ -138,7 +144,33 @@ function sentence_main(req,res){
 				}
 				app.abbr_periods.push(t);//keeping tracks of dots between an abbr
 			}
+			
 		}
+		//bullets after abbr 
+		console.log(temp_for_bullets);
+			while(m=regex.store.bullets.exec(temp_for_bullets)){
+				//for detecting bullets
+				console.log(m);
+				var t=[];
+				var ind,l;
+				if(m[0][0]===" "){
+					ind=m.index+1;
+					l=m[0].length-1;
+				}
+				else{
+					ind=m.index;
+					l=m[0].length;
+				}
+				t.push(ind);//starting index
+				t.push(ind+l);//end index
+				var blanks=m[0].replace(/./g,'#');
+				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
+				app.bullets[m[0].trim()]=t;
+				if(ind>1){
+					app.ques.push(ind-1);//to break at bullets.
+				}
+				
+			}
 		return dic;
 	};
 
@@ -234,10 +266,12 @@ function sentence_main(req,res){
 			if(start){
 				var ne=temp[i];//as we added . in begining
 				if(temp[i+1]!==undefined){
+					console.log(app.text.substr(ne,parseInt(temp[i+1])+1)+"  1");
 					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
 				}
 				else{
 					if(ne<=app.text.length-1){
+						console.log(app.text.substr(ne,app.text.length)+"  2");
 						app.segments.push(app.text.substr(ne,app.text.length));
 					}
 				}
@@ -246,10 +280,12 @@ function sentence_main(req,res){
 			else{
 				var ne=parseInt(temp[i])+1;//as we added . in begining
 				if(temp[i+1]!==undefined){
+					console.log(app.text.substr(ne,parseInt(temp[i+1])+1)+"   3");
 					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
 				}
 				else{
 					if(ne<=app.text.length-1){
+						console.log(app.text.substr(app.text.substr(ne,app.text.length))+"   4");
 						app.segments.push(app.text.substr(ne,app.text.length));
 					}
 				}
@@ -323,6 +359,7 @@ function sentence_main(req,res){
 		app.acc=app.util.locate_acc(app.text);
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
+		test("found bullets  :"+JSON.stringify(app.bullets));
 		test("found emails :"+JSON.stringify(app.emails));
 		test("found urls :"+JSON.stringify(app.urls));
 		test("found domains :"+JSON.stringify(app.domains));

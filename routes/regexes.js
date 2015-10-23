@@ -10,7 +10,8 @@ var store={
 	"email":/[a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+?(\.[a-zA-Z]+)+/g,
 	"url":/(https|http|ftp)(:\/\/)((.*?):(.*?)(\/|$)|(.*?)(\/|$))((.*?)\/)*(\s|(.*?)(\s|$)|($))/g,
 	"domains":/((\/|)([^\s\/\.]{2,}?)\.)+?([^\/\s\.]{2,}?)(\s|$)/g,
-	"quoted":/('|").*?('|")/g
+	"quoted":/('|").*?('|")/g,
+	"bullets":/((\s[a-zA-Z0-9]{1,2}\.\))|(^[a-zA-Z0-9]{1,2}\.\)))|(((\s[a-zA-Z0-9]{1,2}\.)|(^[a-zA-Z0-9]{1,2}\.)))|((\s\(([a-zA-Z0-9]{1,2}\))))|(^\(([a-zA-Z0-9]{1,2}\)))|((\((\s[a-zA-Z0-9]{1,2}\.\)))|(^[a-zA-Z0-9]{1,2}\.\)))|((\s([a-zA-Z0-9]{1,2}\)))|(^([a-zA-Z0-9]{1,2}\))))/g
 };
 exports.store=store;
 //the regex for domains also matches /hello.txt as js does not support negative look behinds
