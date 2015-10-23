@@ -137,15 +137,15 @@ function sentence_main(req,res){
 	app.util.locate_periods=function(source){
 
 		//common method to find punc then divide locations
-		var dic={};
+	  var dic={};
 	  var m;
 		while(m=regex.store.periods.exec(source)){
-			
-			if(m[0].trim()==="." && app.text[m.index+1]!==")"){//  .) should not be considered
-				dic[m.index]=m[0].trim();
+			//punc can be . ! ? .. !? etc all combinations
+			if(m[0][0].trim()==="." && app.text[m.index+1]!==")"){//  .) should not be considered
+				dic[m.index+m[0].length-1]=m[0].trim();
 			}
-			else if(m[0].trim()==="?" || m[0].trim()==="!"){
-				app.ques.push(m.index);
+			else if(m[0][0].trim()==="?" || m[0][0].trim()==="!" && app.text[m.index+1]!==")"){
+				app.ques.push(m.index+m[0].length-1);
 			}
 		
 			
@@ -153,21 +153,11 @@ function sentence_main(req,res){
 		}
 		return dic;
 	};
-	app.util.normailze=function(source){
-		var text=app.util.replace_double_punc(source);
-		return text;
+	app.util.normalize=function(source){
+		//will replace things like & to and viz. to which is etc.
+		return source;
 	};
-	app.util.replace_double_punc=function(source){
-	  	var m=/[\.]{2,}/g;
-	  	source=source.replace(m,".");
-	  	m=/[\?]{2,}/g;
-	  	source=source.replace(m,"?");
-	  	m=/[\!]{2,}/g;
-	  	source=source.replace(m,"!");
-	  	return source;
-		
-		
-	};
+
 
 
 	app.util.locate_last_words=function(indexes){
@@ -318,7 +308,7 @@ function sentence_main(req,res){
 		app.text=req.query.q;
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);
-		app.text=app.util.normailze(app.text);
+		app.text=app.util.normalize(app.text);
 		test("After normailzation  :  "+app.text);
 		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);

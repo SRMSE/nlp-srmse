@@ -1,6 +1,6 @@
 var store={
 	"acc_period":/([a-zA-Z]\.)+(([a-zA-Z]\s)|([a-zA-Z]\.))/g,
-	"periods":/\.|\?|\!/g,
+	"periods":/[\.|\?|\!]+/g,
 	"acc_no_period":/([A-Z]{2,}?)(\.|$|\s)/g,
 	"acc_two_to_five_letter_bw":/(\s[a-zA-Z]{2,3}\.\s|^[a-zA-Z]{2,3}\.\s)/g,
 	"acc_two_to_five_letter_bw_dot_first":/\.[a-z]{2,5}\s/g,
