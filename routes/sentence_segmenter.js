@@ -5,7 +5,7 @@ var regex=require('./regexes');
 var segment_rules=require('./segmenter/rules');
 var corpus=require('./corpus/corpus');
 var date=require('./segmenter/date/date');
-
+var currency=require('./segmenter/currency/currency');
 var test_output="";
 function test(d){
 	test_output=test_output+"<br>"+d;
@@ -27,11 +27,20 @@ function sentence_main(req,res){
 	app.domains={};
 	app.modified_text_to_search_periods="";
 	app.dates={};
+	app.currency={};
 	var date_output={};
+	var currency_output={};
 	app.util.locate_acc=function(source){
 		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
+		currency_output=currency.currency.init(source);
+		app.modified_text_to_search_periods=currency_output['query'];
+		delete currency_output['query'];
+		app.currency=currency_output;
+		test('Found currency :'+JSON.stringify(app.currency));
+
+
 		date_output=date.date.init(source);
 		app.modified_text_to_search_periods=date_output['query'];
 		delete date_output['query'];
