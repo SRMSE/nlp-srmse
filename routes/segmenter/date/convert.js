@@ -5,6 +5,10 @@ dic={
 				{
 					var p=reg.store.months[li[i][2].toLowerCase()];
 					var dd=li[i][4].replace(/-|\.|\s|,|\//g,"");
+					if(li[i][5].length===2){
+						li[i][5]=li[i][4]+li[i][5];
+						dd="01";
+					}
 					if(dd.length===1){
 						dd="0"+dd;
 					}
