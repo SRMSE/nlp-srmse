@@ -196,6 +196,7 @@ function sentence_main(req,res){
 	};
 	app.util.normalize=function(source){
 		//will replace things like & to and viz. to which is etc.
+		source.replace(/(\s){2,}|(\n)+|(\r)+|(\t)+/g," ");
 		return source;
 	};
 
