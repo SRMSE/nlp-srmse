@@ -39,6 +39,10 @@ var rules={
 		var abbr=tup[1].replace(/\./g,'');
 		if(abbr!==undefined && abbr===abbr.toUpperCase()){
 			var period_location=tup[0];
+			console.log(word_before_abbr===word_before_abbr.toLowerCase());
+			console.log(word_after_abbr[0]===word_after_abbr[0].toUpperCase());
+			console.log(corpus.corpus.isStopWord(word_after_abbr));
+			console.log(middle_dot);
 			if(word_before_abbr===word_before_abbr.toLowerCase() && word_after_abbr[0]===word_after_abbr[0].toUpperCase() && corpus.corpus.isStopWord(word_after_abbr) && middle_dot){
 				console.log('4');
 				return true;
@@ -47,11 +51,11 @@ var rules={
 
 		}
 	},
-	"I work for the U.S. Government in Virginia.":function(tup,text,corpus,word_before_abbr,word_after_abbr,middle_dot){
+	"I work for the U.S.A Government in Virginia.":function(tup,text,corpus,word_before_abbr,word_after_abbr,middle_dot){
 		var abbr=tup[1].replace(/\./g,'');
 		if(abbr!==undefined && abbr===abbr.toUpperCase()){
 			var period_location=tup[0];
-			if(word_before_abbr===word_before_abbr.toLowerCase() && word_after_abbr[0]===word_after_abbr[0].toUpperCase() && corpus.corpus.isStopWord(word_after_abbr) && middle_dot){
+			if(word_before_abbr===word_before_abbr.toLowerCase() && word_after_abbr[0]===word_after_abbr[0].toUpperCase() && middle_dot){
 				console.log('4');
 				return true;
 			}

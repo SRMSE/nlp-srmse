@@ -51,8 +51,7 @@ function sentence_main(req,res){
 			}
 		}
 		var m;
-		while(m=regex.store.acc.exec(app.modified_text_to_search_periods)){
-			if(m[0].trim().indexOf("@")>=0){
+		while(m=regex.store.email.exec(app.modified_text_to_search_periods)){
 				//for detecting emails
 				//replace emails to blank in this search to avoid getting their periods
 				var t=[];
@@ -63,8 +62,12 @@ function sentence_main(req,res){
 				app.emails[m[0].trim()]=t;
 				continue;
 			}
-			if(m[0].trim().indexOf("http")>=0 || m[0].trim().indexOf("ftp")>=0){
+		while(m=regex.store.url.exec(app.modified_text_to_search_periods)){
 				//for detecting urls
+				m[0]=m[0].rtrim();
+				if(m[0].substr(m[0].length-1)==="."){
+					m[0]=m[0].substr(0,m[0].length-1);
+				}  //if ends in dot remove dot may be sb
 				var t=[];
 				t.push(m.index);//starting index
 				t.push(m.index+m[0].length);//end index
@@ -72,7 +75,24 @@ function sentence_main(req,res){
 				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
 				app.urls[m[0].trim()]=t;
 				continue;
-			}
+		}
+		while(m=regex.store.quoted.exec(app.modified_text_to_search_periods)){
+				//for detecting urls
+				m[0]=m[0].rtrim();
+				if(m[0].substr(m[0].length-1)==="."){
+					m[0]=m[0].substr(0,m[0].length-1);
+				}  //if ends in dot remove dot may be sb
+				var t=[];
+				t.push(m.index);//starting index
+				t.push(m.index+m[0].length);//end index
+				var blanks=m[0].replace(/./g,'#');
+				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
+				app.urls[m[0].trim()]=t;
+				continue;
+		}
+		while(m=regex.store.acc.exec(app.modified_text_to_search_periods)){
+
+			
 			if(m[0][0]===" "){
 				//javascript regexes do no support look behinds
 				//need to change regex for regexes starting with space
@@ -133,10 +153,18 @@ function sentence_main(req,res){
 		}
 		return dic;
 	};
-
+	app.util.normailze=function(source){
+		var text=app.util.replace_double_punc(source);
+		return text;
+	};
 	app.util.replace_double_punc=function(source){
-	  	var m=regex.store.double_punc;
-	  	app.text=source.replace(m,"?");
+	  	var m=/[\.]{2,}/g;
+	  	source=source.replace(m,".");
+	  	m=/[\?]{2,}/g;
+	  	source=source.replace(m,"?");
+	  	m=/[\!]{2,}/g;
+	  	source=source.replace(m,"!");
+	  	return source;
 		
 		
 	};
@@ -290,7 +318,7 @@ function sentence_main(req,res){
 		app.text=req.query.q;
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);
-		app.util.replace_double_punc(app.text);
+		app.text=app.util.normailze(app.text);
 		test("After normailzation  :  "+app.text);
 		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);
@@ -309,5 +337,10 @@ function sentence_main(req,res){
 	};
 	main(req,res);
 };
-
+String.prototype.ltrim = function() {
+	return this.replace(/^\s+/,"");
+}
+String.prototype.rtrim = function() {
+	return this.replace(/\s+$/,"");
+}
 exports.sentence_segmenter=sentence_main;
