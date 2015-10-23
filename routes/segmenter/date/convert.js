@@ -34,8 +34,31 @@ dic={
 
 		}
 		return dic;
+	},
+	"2":function(li,reg,dic){
+		for (var i = 0; i < li.length; i++) {
+			if(li[i][25])
+			{
+				var p=reg.store.months[li[i][27].toLowerCase()];
+				var d=li[i][22];
+				if(d.length===1){
+					d="0"+d;
+				}
+			}
+			else
+			{
+				var p=reg.store.months[li[i][20].toLowerCase()];
+				var d=li[i][16];
+				if(d.length===1){
+					d="0"+d;
+				}
+			}
+			cod=d+"/"+p+"/"+"-1-1-1-1";
+			dic[li[i][0]].push(cod);
+		}
+		return dic;
 	}
-		
+
 }
 
 exports.init=dic;
