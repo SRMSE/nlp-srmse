@@ -58,6 +58,56 @@ dic={
 		}
 		return dic;
 	},
+	"4":function(li,reg,dic){
+		for (var i = 0; i < li.length; i++) {
+			if(li[i][1] && li[i][2] && li[i][3])
+			{
+				cod=li[i][1]+"/"+li[i][2]+"/"+li[i][3];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][4] && li[i][5] && li[i][6])
+			{
+				cod="0"+li[i][4]+"/"+li[i][5]+"/"+li[i][6];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][7] && li[i][8] && li[i][9])
+			{
+				cod=li[i][9]+"/"+li[i][8]+"/"+li[i][7];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][10] && li[i][11] && li[i][12])
+			{
+				cod="0"+li[i][12]+"/"+li[i][11]+"/"+li[i][10];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][13] && li[i][14])
+			{
+				cod="01/"+li[i][13]+"/"+li[i][14];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][15] && li[i][16] && li[i][17])
+			{
+				cod=li[i][15]+"/"+li[i][16]+"/"+li[i][17];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][18] && li[i][19] && li[i][20])
+			{
+				cod="0"+li[i][15]+"/"+li[i][16]+"/"+li[i][17];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][21])
+			{
+				cod="01/01/"+li[i][21];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][22] && li[i][23])
+			{
+				cod="01/"+li[i][22]+"/"+li[i][23];
+				dic[li[i][0]].push(cod);
+			}
+		}
+		return dic;
+	},
 	"6":function(li,reg,dic){
 		for (var i = 0; i < li.length; i++) {
 			if(li[i][1])
