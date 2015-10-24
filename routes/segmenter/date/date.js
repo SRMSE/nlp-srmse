@@ -60,11 +60,16 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				//console.log(m);
 				var re=new RegExp(m[0],'g');
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(re,mask);
 				flag=3;
+		}
+		try{
+			dic=convert.init[flag](li,reg,dic);
+			li=[];
+		}
+		catch(e){
 		}
 		while(m=reg.store.constant_num_date_format.exec(q))
 		{

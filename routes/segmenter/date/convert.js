@@ -73,6 +73,24 @@ dic={
 		}
 		return dic;
 	},
+	"3":function(li,reg,dic){
+		for (var i = 0; i < li.length; i++) {
+			if(li[i][4])
+			{
+				var a=li[i][0];
+				a=a.split(li[i][4]);
+				if(a[0].length===1){
+					a[0]="0"+a[0];
+				}
+				if(a[1].length===1){
+					a[1]="0"+a[1];
+				}
+				cod=a[0]+"/"+a[1]+"/"+a[2];
+				dic[li[i][0]].push(cod);
+			}
+		}
+		return dic;
+	},
 	"4":function(li,reg,dic){
 		for (var i = 0; i < li.length; i++) {
 			if(li[i][1] && li[i][2] && li[i][3])
