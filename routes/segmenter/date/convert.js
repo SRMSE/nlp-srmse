@@ -108,6 +108,31 @@ dic={
 		}
 		return dic;
 	},
+	"5":function(li,reg,dic){
+		for (var i = 0; i < li.length; i++){
+			if(li[i][1] && li[i][2] && li[i][3] && li[i][4] && li[i][5])
+			{
+				cod=li[i][5]+"/"+li[i][3]+"/"+li[i][1];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][6] && li[i][7] && li[i][8] && li[i][9] && li[i][10])
+			{
+				cod="0"+li[i][10]+"/"+li[i][8]+"/"+li[i][6];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][11] && li[i][12] && li[i][13] && li[i][14] && li[i][15])
+			{
+				cod=li[i][15]+"/0"+li[i][13]+"/"+li[i][11];
+				dic[li[i][0]].push(cod);
+			}
+			if(li[i][16] && li[i][17] && li[i][18] && li[i][19] && li[i][20])
+			{
+				cod="0"+li[i][20]+"/0"+li[i][18]+"/"+li[i][16];
+				dic[li[i][0]].push(cod);
+			}
+		}
+		return dic;
+	},
 	"6":function(li,reg,dic){
 		for (var i = 0; i < li.length; i++) {
 			if(li[i][1])
