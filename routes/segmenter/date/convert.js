@@ -3,17 +3,27 @@ dic={
 		for (var i = 0; i < li.length; i++) {
 			if(!li[i][1])
 				{
-					var p=reg.store.months[li[i][2].toLowerCase()];
-					var dd=li[i][4].replace(/-|\.|\s|,|\//g,"");
-					if(li[i][5].length===2){
-						li[i][5]=li[i][4]+li[i][5];
-						dd="01";
+					if(!li[i][6])
+					{
+						var p=reg.store.months[li[i][2].toLowerCase()];	
+						var dd=li[i][5].replace(/-|\.|\s|,|\//g,"");
+						cod=dd+"/"+p+"/-1-1-1-1";
+						dic[li[i][0]].push(cod);
 					}
-					if(dd.length===1){
-						dd="0"+dd;
+					else
+					{
+						var p=reg.store.months[li[i][2].toLowerCase()];
+						var dd=li[i][4].replace(/-|\.|\s|,|\//g,"");
+						if(li[i][5].length===2){
+							li[i][5]=li[i][4]+li[i][5];
+							dd="01";
+						}
+						if(dd.length===1){
+							dd="0"+dd;
+						}
+						cod=dd+"/"+p+"/"+li[i][5];
+						dic[li[i][0]].push(cod);
 					}
-					cod=dd+"/"+p+"/"+li[i][5];
-					dic[li[i][0]].push(cod);
 				}
 			else
 			{
@@ -37,21 +47,26 @@ dic={
 	},
 	"2":function(li,reg,dic){
 		for (var i = 0; i < li.length; i++) {
-			if(li[i][25])
+			if(li[i][1] && li[i][2] && li[i][3])
 			{
-				var p=reg.store.months[li[i][27].toLowerCase()];
-				var d=li[i][22];
-				if(d.length===1){
-					d="0"+d;
-				}
+				var p=reg.store.months[li[i][3].toLowerCase()];
+				var d=li[i][1];
 			}
-			else
+			if(li[i][10] && li[i][11] && li[i][12])
 			{
-				var p=reg.store.months[li[i][20].toLowerCase()];
-				var d=li[i][16];
-				if(d.length===1){
-					d="0"+d;
-				}
+				var p=reg.store.months[li[i][12].toLowerCase()];
+				var d="0"+li[i][10];
+				
+			}
+			if(li[i][5] && li[i][6] && li[i][7] && li[i][8])
+			{
+				var p=reg.store.months[li[i][8].toLowerCase()];
+				var d=li[i][5];
+			}
+			if(li[i][14] && li[i][15] && li[i][16] && li[i][17])
+			{
+				var p=reg.store.months[li[i][17].toLowerCase()];
+				var d="0"+li[i][14];
 			}
 			cod=d+"/"+p+"/"+"-1-1-1-1";
 			dic[li[i][0]].push(cod);
