@@ -6,6 +6,7 @@ var segment_rules=require('./segmenter/rules');
 var corpus=require('./corpus/corpus');
 var date=require('./segmenter/date/date');
 var currency=require('./segmenter/currency/currency');
+var word_segmenter=require('./segmenter/word_segment/index');
 var test_output="";
 function test(d){
 	test_output=test_output+"<br>"+d;
@@ -351,6 +352,7 @@ function sentence_main(req,res){
 	};
 	function main(req,res){
 		console.log(req.query.q);
+		console.log(word_segmenter.segment(req.query.q)); //uncomment to see word segmenter but cannot pass entire
 		app.text=req.query.q;
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);
