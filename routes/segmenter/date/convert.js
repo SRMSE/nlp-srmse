@@ -57,6 +57,21 @@ dic={
 			dic[li[i][0]].push(cod);
 		}
 		return dic;
+	},
+	"6":function(li,reg,dic){
+		for (var i = 0; i < li.length; i++) {
+			if(li[i][1])
+			{
+				var cod=li[i][1]+"/"+li[i][3]+"/-1-1-1-1";
+				dic[li[i][0]].push(cod);
+			}
+			else
+			{
+				var cod=li[i][6]+"/"+li[i][4]+"/-1-1-1-1";
+				dic[li[i][0]].push(cod);
+			}
+		}
+		return dic;
 	}
 
 }
