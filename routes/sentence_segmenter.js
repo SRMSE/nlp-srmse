@@ -185,8 +185,8 @@ function sentence_main(req,res){
 				
 			}
 			//for digits
-			while(m=regex.store.bullets.exec(app.modified_text_to_search_periods)){
-				//for detecting bullets
+			while(m=regex.store.digits.exec(app.modified_text_to_search_periods)){
+				//for detecting digits
 				//console.log(m);
 				var t=[];
 				var ind,l;
