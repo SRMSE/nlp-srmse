@@ -2,6 +2,7 @@
 */
 //app definations
 var regex=require('./regexes');
+var annotate=require('./annotate/index');
 var segment_rules=require('./segmenter/rules');
 var corpus=require('./corpus/corpus');
 var date=require('./segmenter/date/date');
@@ -9,6 +10,7 @@ var currency=require('./segmenter/currency/currency');
 var word_segmenter=require('./segmenter/word_segment/index');
 var mime=require('mime');
 var test_output="";
+annotate.dbpedia_annotate.init();
 function test(d){
 	test_output=test_output+"<br>"+d;
 }
@@ -365,6 +367,9 @@ function sentence_main(req,res){
 		test("After normailzation  :  "+app.text);
 		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);
+		annotate.dbpedia_annotate.annotate(app.text,function(output){
+			console.log(output.response.Resources);
+		})
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("found bullets  :"+JSON.stringify(app.bullets));
