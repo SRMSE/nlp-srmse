@@ -102,11 +102,6 @@ function sentence_main(req,res){
 				continue;
 		}
 		while(m=regex.store.quoted.exec(app.modified_text_to_search_periods)){
-				//for detecting urls
-				m[0]=m[0].rtrim();
-				if(m[0].substr(m[0].length-1)==="."){
-					m[0]=m[0].substr(0,m[0].length-1);
-				}  //if ends in dot remove dot may be sb
 				var t=[];
 				t.push(m.index);//starting index
 				t.push(m.index+m[0].length);//end index
@@ -384,7 +379,7 @@ function sentence_main(req,res){
 		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);
 		annotate.dbpedia_annotate.annotate(app.text,function(output){
-			console.log(output.response.Resources);
+			//console.log(output.response.Resources);
 		})
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
@@ -398,7 +393,10 @@ function sentence_main(req,res){
 		app.filter_abbr();
 		test("final abbr periods   :"+JSON.stringify(app.periods));
 		app.segmenter();
-		test(JSON.stringify(app.segments));
+		for (var i = 0; i < app.segments.length; i++) {
+			test(app.segments[i]);
+		};
+		
 		res.send(test_output);
 		res.end();
 	};
