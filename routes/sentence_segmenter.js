@@ -198,6 +198,13 @@ function sentence_main(req,res){
 	app.util.normalize=function(source){
 		//will replace things like & to and viz. to which is etc.
 		source.replace(/(\s){2,}|(\n)+|(\r)+|(\t)+/g," ");
+		source.replace(/&/g,'and');
+		var m;
+		//regex to replace things like google.At   to google. At
+		while(m=regex.store.word_joined_by_period.exec(source)){
+			source=source.replace(m[0],m[0].split('.').join('. '));
+		}
+		console.log(source);
 		return source;
 	};
 
@@ -242,6 +249,7 @@ function sentence_main(req,res){
 				console.log(after_word);
 				if(app.rules[key](app.abbr_periods[i],app.text,corpus,before_word,after_word,middle_period)){
 					//delete the period
+					console.log('detected');
 					delete app.periods[app.abbr_periods[i][0]];
 					break;
 				}
@@ -261,37 +269,25 @@ function sentence_main(req,res){
 	app.segmenter=function(){
 		var temp=[0];
 		var start=true;
-		
-		var temp=temp.concat(app.periods).concat(app.ques).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
-		console.log(temp);
+		temp=temp.concat(app.periods).concat(app.ques).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
 		for (var i = 0; i < temp.length; i++) {
 			if(start){
-				var ne=temp[i];//as we added . in begining
-				if(temp[i+1]!==undefined){
-					console.log(app.text.substr(ne,parseInt(temp[i+1])+1)+"  1");
-					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
-				}
-				else{
-					if(ne<=app.text.length-1){
-						console.log(app.text.substr(ne,app.text.length)+"  2");
-						app.segments.push(app.text.substr(ne,app.text.length));
-					}
-				}
+				var ne=parseInt(temp[i]);
 				start=false;
 			}
 			else{
-				var ne=parseInt(temp[i])+1;//as we added . in begining
+				var ne=parseInt(temp[i])+1;
+			}
+			
 				if(temp[i+1]!==undefined){
-					console.log(app.text.substr(ne,parseInt(temp[i+1])+1)+"   3");
-					app.segments.push(app.text.substr(ne,parseInt(temp[i+1])+1));
+					app.segments.push(app.text.substring(ne,(parseInt(temp[i+1])+1)));
 				}
 				else{
 					if(ne<=app.text.length-1){
-						console.log(app.text.substr(app.text.substr(ne,app.text.length))+"   4");
-						app.segments.push(app.text.substr(ne,app.text.length));
+						app.segments.push(app.text.substring(ne,app.text.length));
+
 					}
 				}
-			}
 			
 		};
 	};
@@ -352,7 +348,7 @@ function sentence_main(req,res){
 	};
 	function main(req,res){
 		console.log(req.query.q);
-		console.log(word_segmenter.segment(req.query.q)); //uncomment to see word segmenter but cannot pass entire
+		//console.log(word_segmenter.segment.execute(req.query.q)); //uncomment to see word segmenter but cannot pass entire
 		app.text=req.query.q;
 		app.original_text=app.text;
 		test("original_text:  "+app.original_text);

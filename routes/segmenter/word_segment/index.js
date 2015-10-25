@@ -102,11 +102,11 @@ var word_segmenter={
 	},
 	"cache":{
 
+	},
+	"execute":function(data){
+		return word_segmenter.segmentWithProb(data);
 	}
 
 };
-word_segmenter.OneGramDist('./routes/segmenter/word_segment/one-grams.txt');
-function execute(data){
-	return word_segmenter.segmentWithProb(data);
-}
-exports.segment=execute;
+word_segmenter.OneGramDist(__dirname+'/one-grams.txt');
+exports.segment=word_segmenter;
