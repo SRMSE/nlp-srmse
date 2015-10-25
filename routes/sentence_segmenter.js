@@ -37,6 +37,7 @@ function sentence_main(req,res){
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
 		currency_output=currency.currency.init(source);
+		console.log(currency_output);
 		app.modified_text_to_search_periods=currency_output['query'];
 		delete currency_output['query'];
 		app.currency=currency_output;
@@ -99,7 +100,6 @@ function sentence_main(req,res){
 				t.push(m.index+m[0].length);//end index
 				var blanks=m[0].replace(/./g,'#');
 				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
-				app.urls[m[0].trim()]=t;
 				continue;
 		}
 		var temp_for_bullets=app.modified_text_to_search_periods;
@@ -148,10 +148,10 @@ function sentence_main(req,res){
 			
 		}
 		//bullets after abbr 
-		console.log(temp_for_bullets);
+		//console.log(temp_for_bullets);
 			while(m=regex.store.bullets.exec(temp_for_bullets)){
 				//for detecting bullets
-				console.log(m);
+				//console.log(m);
 				var t=[];
 				var ind,l;
 				if(m[0][0]===" "){
@@ -204,7 +204,7 @@ function sentence_main(req,res){
 		while(m=regex.store.word_joined_by_period.exec(source)){
 			source=source.replace(m[0],m[0].split('.').join('. '));
 		}
-		console.log(source);
+		//console.log(source);
 		return source;
 	};
 
@@ -347,7 +347,7 @@ function sentence_main(req,res){
 
 	};
 	function main(req,res){
-		console.log(req.query.q);
+		//console.log(req.query.q);
 		//console.log(word_segmenter.segment.execute(req.query.q)); //uncomment to see word segmenter but cannot pass entire
 		app.text=req.query.q;
 		app.original_text=app.text;
