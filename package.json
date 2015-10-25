@@ -1,10 +1,12 @@
 {
-    "name": "application-name"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": "2.5.8"
-    , "jade": ">= 0.0.1"
-    ,"hotnode":"*"
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "2.5.8",
+    "jade": ">= 0.0.1",
+    "hotnode": "*",
+    "language-detect": "~1.0.0",
+    "dbpedia-spotlight": "~0.5.27"
   }
 }
