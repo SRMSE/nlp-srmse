@@ -7,6 +7,7 @@ var corpus=require('./corpus/corpus');
 var date=require('./segmenter/date/date');
 var currency=require('./segmenter/currency/currency');
 var word_segmenter=require('./segmenter/word_segment/index');
+var mime=require('mime');
 var test_output="";
 function test(d){
 	test_output=test_output+"<br>"+d;
@@ -30,6 +31,7 @@ function sentence_main(req,res){
 	app.dates={};
 	app.currency={};
 	app.bullets={};
+	app.files={};
 	var date_output={};
 	var currency_output={};
 	app.util.locate_acc=function(source){
@@ -60,7 +62,14 @@ function sentence_main(req,res){
 					t.push(m1.index+m1[0].length);//end index
 					var blanks=m1[0].replace(/./g,'#');
 					app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m1[0],blanks);
-					app.domains[m1[0].trim()]=t;
+					if(mime.lookup(m1[0].trim())==="application/octet-stream"){
+						//not known extension could be domain
+						app.domains[m1[0].trim()]=t;
+					}
+					else{
+						app.files[m1[0].trim()]=t;
+					}
+					
 			}
 		}
 
@@ -361,6 +370,7 @@ function sentence_main(req,res){
 		test("found bullets  :"+JSON.stringify(app.bullets));
 		test("found emails :"+JSON.stringify(app.emails));
 		test("found urls :"+JSON.stringify(app.urls));
+		test("found files :"+JSON.stringify(app.files));
 		test("found domains :"+JSON.stringify(app.domains));
 		test("total periods found :"+JSON.stringify(app.periods));
 		app.filter_abbr();
