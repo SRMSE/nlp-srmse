@@ -79,27 +79,21 @@ function sentence_main(req,res){
 		while(m=regex.store.email.exec(app.modified_text_to_search_periods)){
 				//for detecting emails
 				//replace emails to blank in this search to avoid getting their periods
+				
 				var t=[];
 				t.push(m.index);//starting index
 				t.push(m.index+m[0].length);//end index
 				var blanks=m[0].replace(/./g,'#');
 				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
 				app.emails[m[0].trim()]=t;
-				continue;
 			}
 		while(m=regex.store.url.exec(app.modified_text_to_search_periods)){
-				//for detecting urls
-				m[0]=m[0].rtrim();
-				if(m[0].substr(m[0].length-1)==="."){
-					m[0]=m[0].substr(0,m[0].length-1);
-				}  //if ends in dot remove dot may be sb
 				var t=[];
 				t.push(m.index);//starting index
 				t.push(m.index+m[0].length);//end index
 				var blanks=m[0].replace(/./g,'#');
 				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
 				app.urls[m[0].trim()]=t;
-				continue;
 		}
 		while(m=regex.store.quoted.exec(app.modified_text_to_search_periods)){
 				var t=[];
@@ -107,7 +101,8 @@ function sentence_main(req,res){
 				t.push(m.index+m[0].length);//end index
 				var blanks=m[0].replace(/./g,'#');
 				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
-				continue;
+				
+				console.log(app.modified_text_to_search_periods);
 		}
 		var temp_for_bullets=app.modified_text_to_search_periods;
 		while(m=regex.store.acc.exec(app.modified_text_to_search_periods)){
@@ -156,9 +151,11 @@ function sentence_main(req,res){
 		}
 		//bullets after abbr 
 		//console.log(temp_for_bullets);
+
+				
 			while(m=regex.store.bullets.exec(temp_for_bullets)){
 				//for detecting bullets
-				//console.log(m);
+				console.log("ASDFA"+m[0]+"ASDFADFA");
 				var t=[];
 				var ind,l;
 				if(m[0][0]===" "){
@@ -179,10 +176,10 @@ function sentence_main(req,res){
 				}
 				
 			}
+
 			//for digits
 			while(m=regex.store.digits.exec(app.modified_text_to_search_periods)){
 				//for detecting digits
-				//console.log(m);
 				var t=[];
 				var ind,l;
 				ind=m.index;
@@ -194,6 +191,7 @@ function sentence_main(req,res){
 				app.digits[m[0].trim()]=t;
 				
 			}
+			console.log(app.modified_text_to_search_periods);
 		return dic;
 	};
 
@@ -205,10 +203,10 @@ function sentence_main(req,res){
 	  var m;
 		while(m=regex.store.periods.exec(source)){
 			//punc can be . ! ? .. !? etc all combinations
-			if(m[0][0].trim()==="." && app.text[m.index+1]!==")"){//  .) should not be considered
+			if(m[0][0].trim()==="."){
 				dic[m.index+m[0].length-1]=m[0].trim();
 			}
-			else if(m[0][0].trim()==="?" || m[0][0].trim()==="!" && app.text[m.index+1]!==")"){
+			else if(m[0][0].trim()==="?" || m[0][0].trim()==="!"){
 				app.ques.push(m.index+m[0].length-1);
 			}
 		
@@ -394,7 +392,7 @@ function sentence_main(req,res){
 		test("final abbr periods   :"+JSON.stringify(app.periods));
 		app.segmenter();
 		for (var i = 0; i < app.segments.length; i++) {
-			test(app.segments[i]);
+			test(app.segments[i]+"<br><br>");
 		};
 		
 		res.send(test_output);
