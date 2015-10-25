@@ -34,6 +34,7 @@ function sentence_main(req,res){
 	app.currency={};
 	app.bullets={};
 	app.files={};
+	app.digits={};
 	var date_output={};
 	var currency_output={};
 	app.util.locate_acc=function(source){
@@ -181,6 +182,21 @@ function sentence_main(req,res){
 				if(ind>1){
 					app.ques.push(ind-1);//to break at bullets.
 				}
+				
+			}
+			//for digits
+			while(m=regex.store.bullets.exec(app.modified_text_to_search_periods)){
+				//for detecting bullets
+				//console.log(m);
+				var t=[];
+				var ind,l;
+				ind=m.index;
+				l=m[0].length;
+				t.push(ind);//starting index
+				t.push(ind+l);//end index
+				var blanks=m[0].replace(/./g,'#');
+				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
+				app.digits[m[0].trim()]=t;
 				
 			}
 		return dic;
@@ -377,6 +393,7 @@ function sentence_main(req,res){
 		test("found urls :"+JSON.stringify(app.urls));
 		test("found files :"+JSON.stringify(app.files));
 		test("found domains :"+JSON.stringify(app.domains));
+		test("found digits :"+JSON.stringify(app.digits));
 		test("total periods found :"+JSON.stringify(app.periods));
 		app.filter_abbr();
 		test("final abbr periods   :"+JSON.stringify(app.periods));

@@ -11,8 +11,9 @@ var store={
 	"url":/(https|http|ftp)(:\/\/)((.*?):(.*?)(\/|$)|(.*?)(\/|$))((.*?)\/)*(\s|(.*?)(\s|$)|($))/g,
 	"domains":/((\/|)([^\s\/\.]{2,}?)\.)+?([^\/\s\.]{2,}?)(\s|$)/g,
 	"quoted":/('|").*?('|")/g,
+	"digits":/([+]|[-]|)(\d+(\.\d+|(,\d+)+((\.\d+)|)|))(\b|$)/g,
 	"word_joined_by_period":/(^|\s)[a-zA-Z]{1}[a-z]{2,}?\.[A-Z][a-z]{0,4}/g,
-	"bullets":/((\s[a-zA-Z0-9]{1,2}\.\))|(^[a-zA-Z0-9]{1,2}\.\)))|(((\s[a-zA-Z0-9]{1,2}\.)|(^[a-zA-Z0-9]{1,2}\.)))|((\s\(([a-zA-Z0-9]{1,2}\))))|(^\(([a-zA-Z0-9]{1,2}\)))|((\((\s[a-zA-Z0-9]{1,2}\.\)))|(^[a-zA-Z0-9]{1,2}\.\)))|((\s([a-zA-Z0-9]{1,2}\)))|(^([a-zA-Z0-9]{1,2}\))))/g
+	"bullets":/(\b([a-zA-Z]{1,2}|[0-9]{1,2}|[mdclxviMDCLXVI]+)\.\)\s)|(\b([a-zA-Z]{1,2}\.|[0-9]{1,2}(\.[^0-9])|[mdclxviMDCLXVI]+\.))|(\b\(([a-zA-Z]{1,2}|[0-9]{1,2}|[mdclxviMDCLXVI]+)\))|(\(\b([a-zA-Z]{1,2}|[0-9]{1,2}|[mdclxviMDCLXVI]+)\.\))|(\b([a-zA-Z]{1,2}|([0-9]{1,2})|[mdclxviMDCLXVI]+)\))/g
 };
 exports.store=store;
 //the regex for domains also matches /hello.txt as js does not support negative look behinds
