@@ -355,9 +355,9 @@ function sentence_main(req,res){
 		test("After normailzation  :  "+app.text);
 		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);
-		annotate.dbpedia_annotate.annotate(app.text,function(output){
+		//annotate.dbpedia_annotate.annotate(app.text,function(output){
 			//console.log(output.response.Resources);
-		})
+		//})
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("found bullets  :"+JSON.stringify(app.bullets));
