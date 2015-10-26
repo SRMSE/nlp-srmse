@@ -51,11 +51,25 @@ function sentence_main(req,res){
 
 		date_output=date.date.init(source);
 		app.modified_text_to_search_periods=date_output['query'];
+		console.log(date_output["query"]+"AAAAA");
 		delete date_output['query'];
 		app.dates=date_output;
 		test('Found dates :'+JSON.stringify(app.dates));
 		var m1;
-
+		//for digits
+			while(m=regex.store.digits.exec(app.modified_text_to_search_periods)){
+				//for detecting digits
+				var t=[];
+				var ind,l;
+				ind=m.index;
+				l=m[0].length;
+				t.push(ind);//starting index
+				t.push(ind+l);//end index
+				var blanks=m[0].replace(/./g,'#');
+				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
+				app.digits[m[0].trim()]=t;
+				
+			}
 		while(m1=regex.store.domains.exec(app.modified_text_to_search_periods)){
 			//for detecting domain names
 			//replace domain names to blank in this search to avoid getting their periods
@@ -106,7 +120,7 @@ function sentence_main(req,res){
 		}
 		var temp_for_bullets=app.modified_text_to_search_periods;
 		while(m=regex.store.acc.exec(app.modified_text_to_search_periods)){
-
+			//main acronym and abbreviation function
 			
 			if(m[0][0]===" "){
 				//javascript regexes do no support look behinds
@@ -177,20 +191,7 @@ function sentence_main(req,res){
 				
 			}
 
-			//for digits
-			while(m=regex.store.digits.exec(app.modified_text_to_search_periods)){
-				//for detecting digits
-				var t=[];
-				var ind,l;
-				ind=m.index;
-				l=m[0].length;
-				t.push(ind);//starting index
-				t.push(ind+l);//end index
-				var blanks=m[0].replace(/./g,'#');
-				app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m[0],blanks);
-				app.digits[m[0].trim()]=t;
-				
-			}
+			
 			console.log(app.modified_text_to_search_periods);
 		return dic;
 	};
@@ -260,11 +261,10 @@ function sentence_main(req,res){
 				continue;
 			}
 
-			
+			var after_word=app.util.find_next_word(app.text,app.abbr_periods[i][0]);
+			var before_word=app.util.find_prev_word(app.text,app.abbr_periods[i][0]);
+			var middle_period=app.abbr_periods[i][2];			
 			for (var key in app.rules) {
-				var after_word=app.util.find_next_word(app.text,app.abbr_periods[i][0]);
-				var before_word=app.util.find_prev_word(app.text,app.abbr_periods[i][0]);
-				var middle_period=app.abbr_periods[i][2];
 				console.log(before_word);
 				console.log(after_word);
 				if(app.rules[key](app.abbr_periods[i],app.text,corpus,before_word,after_word,middle_period)){
@@ -394,7 +394,7 @@ function sentence_main(req,res){
 		for (var i = 0; i < app.segments.length; i++) {
 			test(app.segments[i]+"<br><br>");
 		};
-		
+		test("Total sentences detected "+app.segments.length);
 		res.send(test_output);
 		res.end();
 	};
