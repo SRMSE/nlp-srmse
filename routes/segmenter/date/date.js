@@ -14,7 +14,9 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m)
-				q=q.replace(m[0],"#");
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
 				flag=1;
 		}
 		try{
@@ -27,7 +29,9 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
 				flag=2;
 		}
 		try{
@@ -40,7 +44,9 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
 				flag=5;
 		}
 		try{
@@ -53,7 +59,9 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
 				flag=3;
 		}
 		try{
@@ -66,7 +74,9 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
 				flag=4;
 		}
 		try{
@@ -79,7 +89,9 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var re=new RegExp(m[0],'g');
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(re,mask);
 				flag=6;
 		}
 		try{
@@ -89,7 +101,6 @@ app.init=function(query){
 		catch(e){
 		}
 		dic["query"]=q;
-		console.log(dic);
 		return dic;
 };
 exports.date=app;
