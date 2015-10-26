@@ -28,7 +28,6 @@ function sentence_main(req,res){
 	app.ques=[];
 	app.emails={};
 	app.urls={};
-	app.domains={};
 	app.modified_text_to_search_periods="";
 	app.dates={};
 	app.currency={};
@@ -69,25 +68,6 @@ function sentence_main(req,res){
 				app.digits[m[0].trim()]=t;
 				
 			}
-		while(m1=regex.store.domains.exec(app.modified_text_to_search_periods)){
-			//for detecting domain names
-			//replace domain names to blank in this search to avoid getting their periods
-			if(m1[0][0]!=="/"){
-					var t=[];
-					t.push(m1.index);//starting index
-					t.push(m1.index+m1[0].length);//end index
-					var blanks=m1[0].replace(/./g,'#');
-					app.modified_text_to_search_periods=app.modified_text_to_search_periods.replace(m1[0],blanks);
-					if(mime.lookup(m1[0].trim())==="application/octet-stream"){
-						//not known extension could be domain
-						app.domains[m1[0].trim()]=t;
-					}
-					else{
-						app.files[m1[0].trim()]=t;
-					}
-					
-			}
-		}
 
 		while(m=regex.store.email.exec(app.modified_text_to_search_periods)){
 				//for detecting emails
@@ -384,7 +364,6 @@ function sentence_main(req,res){
 		test("found emails :"+JSON.stringify(app.emails));
 		test("found urls :"+JSON.stringify(app.urls));
 		test("found files :"+JSON.stringify(app.files));
-		test("found domains :"+JSON.stringify(app.domains));
 		test("found digits :"+JSON.stringify(app.digits));
 		test("total periods found :"+JSON.stringify(app.periods));
 		app.filter_abbr();
