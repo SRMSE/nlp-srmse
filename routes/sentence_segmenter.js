@@ -51,7 +51,6 @@ function sentence_main(req,res){
 
 		date_output=date.date.init(source);
 		app.modified_text_to_search_periods=date_output['query'];
-		console.log(date_output["query"]+"AAAAA");
 		delete date_output['query'];
 		app.dates=date_output;
 		test('Found dates :'+JSON.stringify(app.dates));
