@@ -10,10 +10,7 @@ var currency=require('./segmenter/currency/currency');
 var word_segmenter=require('./segmenter/word_segment/index');
 var mime=require('mime');
 var test_output="";
-var unit=require('./segmenter/units/unit');
 annotate.dbpedia_annotate.init();
-var prototypes=require("./util/proto");
-prototypes.init();
 function test(d){
 	test_output=test_output+"<br>"+d;
 }
@@ -43,7 +40,6 @@ function sentence_main(req,res){
 		var dic={};
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
-		unit_output=unit.get(source);
 		currency_output=currency.currency.init(source);
 		console.log(currency_output);
 		app.modified_text_to_search_periods=currency_output['query'];
@@ -152,7 +148,6 @@ function sentence_main(req,res){
 				
 			while(m=regex.store.bullets.exec(temp_for_bullets)){
 				//for detecting bullets
-				console.log("ASDFA"+m[0]+"ASDFADFA");
 				var t=[];
 				var ind,l;
 				if(m[0][0]===" "){
@@ -359,9 +354,9 @@ function sentence_main(req,res){
 		test("After normailzation  :  "+app.text);
 		app.modified_text_to_search_periods=app.text;
 		app.acc=app.util.locate_acc(app.text);
-		//annotate.dbpedia_annotate.annotate(app.text,function(output){
+		annotate.dbpedia_annotate.annotate(app.text,function(output){
 			//console.log(output.response.Resources);
-		//})
+		})
 		app.periods=app.util.locate_periods(app.modified_text_to_search_periods);
 		test("found abbr  :"+JSON.stringify(app.acc));
 		test("found bullets  :"+JSON.stringify(app.bullets));
@@ -382,4 +377,10 @@ function sentence_main(req,res){
 	};
 	main(req,res);
 };
+String.prototype.ltrim = function() {
+	return this.replace(/^\s+/,"");
+}
+String.prototype.rtrim = function() {
+	return this.replace(/\s+$/,"");
+}
 exports.sentence_segmenter=sentence_main;

@@ -14,7 +14,8 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m)
-				q=q.replace(m[0],"#");
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(m[0],mask);
 				flag=1;
 		}
 		try{
@@ -27,7 +28,8 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(m[0],mask);
 				flag=2;
 		}
 		try{
@@ -40,7 +42,8 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(m[0],mask);
 				flag=5;
 		}
 		try{
@@ -53,7 +56,8 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(m[0],mask);
 				flag=3;
 		}
 		try{
@@ -66,7 +70,8 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(m[0],mask);
 				flag=4;
 		}
 		try{
@@ -79,7 +84,8 @@ app.init=function(query){
 		{
 				dic[m[0]]=[m.index,m.index+m[0].length]
 				li.push(m);
-				q=q.replace(m[0],"#");
+				var mask=m[0].replace(/./g,'#');
+				q=q.replace(m[0],mask);
 				flag=6;
 		}
 		try{
