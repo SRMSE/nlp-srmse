@@ -5,6 +5,7 @@ var regex=require('./regexes');
 var annotate=require('./annotate/index');
 var segment_rules=require('./segmenter/rules');
 var corpus=require('./corpus/corpus');
+var special_search=require('./segmenter/special_search/special_search');
 var date=require('./segmenter/date/date');
 var currency=require('./segmenter/currency/currency');
 var word_segmenter=require('./segmenter/word_segment/index');
@@ -33,6 +34,7 @@ function sentence_main(req,res){
 	app.urls={};
 	app.modified_text_to_search_periods="";
 	app.dates={};
+	app.special_search={};
 	app.currency={};
 	app.bullets={};
 	app.files={};
@@ -41,6 +43,11 @@ function sentence_main(req,res){
 	var currency_output={};
 	app.util.locate_acc=function(source){
 		var dic={};
+		special_search_output=special_search.special_search.init(source);
+		app.modified_text_to_search_periods=special_search_output['query'];
+		delete special_search_output['query'];
+		app.special_search=special_search_output;
+		test('Found Special Search :'+JSON.stringify(app.special_search));
 		//acronyms are short hand from starting char of each words
 		//can be U.S.A or USA
 		unit_output=unit.get(source);
