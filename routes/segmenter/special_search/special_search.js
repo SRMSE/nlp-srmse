@@ -45,7 +45,7 @@ app.init=function(query){
 		while(m=reg.store.search_operator.exec(q))
 		{
 			var j=m[0].split(":")[0];
-			dic[m[0]]=[m.index,m.index+m[0].length,"Search Operator/"+j];
+			dic[m[0]]=[m.index,m.index+m[0].length,"Search Operator",j];
 			var mask=m[0].replace(/./g,'#');
 			q=q.replace(m[0],mask);
 		}
