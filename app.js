@@ -3,8 +3,9 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes');
+var express = require('express');
+var index=require('./routes/index');
+var query=require('./routes/query');
 
 var app = module.exports = express.createServer();
 
@@ -26,11 +27,10 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
-
 // Routes
-
-app.get('/', routes.index);
-app.get('/sentence_segmenter',routes.sentence_segmenter)
+app.get('/', index.index);
+//app.get('/sentence_segmenter',routes.sentence_segmenter);
+app.get('/query',query.index);
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
