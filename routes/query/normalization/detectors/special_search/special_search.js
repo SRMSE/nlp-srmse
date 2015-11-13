@@ -8,7 +8,7 @@ app.init=function(query){
 		var dic={};
 		while(m=reg.store.blood_groups.exec(q))
 		{
-			dic[m[0]]=[m.index,m.index+m[0].length,"Blood Group"];
+			dic[m[0]]=[m.index,m.index+(m[0].length-1),"Blood Group"];
 			var mask=m[0].replace(/./g,'#');
 			q=q.replace(m[0],mask);
 		}
@@ -23,7 +23,7 @@ app.init=function(query){
 				m.index=m.index+1;
 				m[0]=m[0].substring(1);
 			}
-			dic[m[0]]=[m.index,m.index+m[0].length,"Punctuator"];
+			dic[m[0]]=[m.index,m.index+(m[0].length-1),"Punctuator"];
 			li.push(m);
 			var mask=m[0].replace(/./g,'#');
 			q=q.replace(m[0],mask);
@@ -53,11 +53,10 @@ app.init=function(query){
 		while(m=reg.store.search_operator.exec(q))
 		{
 			var j=m[0].split(":")[0];
-			dic[m[0]]=[m.index,m.index+m[0].length,"Search Operator",j];
+			dic[m[0]]=[m.index,m.index+(m[0].length-1),"Search Operator",j];
 			var mask=m[0].replace(/./g,'#');
 			q=q.replace(m[0],mask);
 		}
-		console.log(q);
 		dic["query"]=q;
 		return dic;
 };

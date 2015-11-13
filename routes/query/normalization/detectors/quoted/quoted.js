@@ -7,10 +7,10 @@ var app={
 		while(m=regex.store.quoted.exec(dic["query"])){
 				var t=[];
 				t.push(m.index);//starting index
-				t.push(m.index+m[0].length);//end index
+				t.push(m.index+(m[0].length-1));//end index
 				var blanks=m[0].replace(/./g,'#');
 				dic["query"]=dic["query"].replace(m[0],blanks);
-				dic[m[0]]=[m.index,m.index+(m[0].length-1)];
+				dic[m[0]]=t;
 				
 		}
 		app.query=dic["query"];

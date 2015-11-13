@@ -5,10 +5,7 @@ var app={
 		app.query="";//reset
 		var dic={};
 		dic["query"]=source;
-		console.log(dic["query"]);
 		while(m=regex.store.time.exec(dic["query"])){
-				//for detecting urls
-				console.log(m);
 				var t=[];
 				if(m[0][0]===" "){
 					//fix for regex boundary
@@ -17,7 +14,7 @@ var app={
 				}
 
 				t.push(m.index);//starting index
-				t.push(m.index+m[0].length);//end index
+				t.push(m.index+(m[0].length-1));//end index
 				var blanks=m[0].replace(/./g,'#');
 				dic["query"]=dic["query"].replace(m[0],blanks);
 				dic[m[0].trim()]=t;

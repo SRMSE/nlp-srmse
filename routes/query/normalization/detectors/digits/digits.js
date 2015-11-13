@@ -10,7 +10,7 @@ var app={
 					var t=[];
 					var ind,l;
 					ind=m.index;
-					l=m[0].length;
+					l=m[0].length-1;
 					t.push(ind);//starting index
 					t.push(ind+l);//end index
 					var blanks=m[0].replace(/./g,'#');

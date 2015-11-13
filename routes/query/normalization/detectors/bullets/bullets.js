@@ -19,7 +19,7 @@ var app={
 						l=m[0].length;
 					}
 					t.push(ind);//starting index
-					t.push(ind+l);//end index
+					t.push(ind+l-1);//end index
 					var blanks=m[0].replace(/./g,'#');
 					dic["query"]=dic["query"].replace(m[0],blanks);
 					dic[m[0].trim()]=t;

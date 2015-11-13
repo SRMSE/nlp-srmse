@@ -12,7 +12,7 @@ app.init=function(query){
 		var cod;
 		while(m=reg.store.word_month_date_format.exec(q))
 		{
-				dic[m[0]]=[m.index,m.index+m[0].length]
+				dic[m[0]]=[m.index,m.index+(m[0].length-1)]
 				li.push(m)
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(m[0],mask);
@@ -26,7 +26,7 @@ app.init=function(query){
 		}	
 		while(m=reg.store.word_month_without_year.exec(q))
 		{
-				dic[m[0]]=[m.index,m.index+m[0].length]
+				dic[m[0]]=[m.index,m.index+(m[0].length-1)]
 				li.push(m);
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(m[0],mask);
@@ -40,7 +40,7 @@ app.init=function(query){
 		}
 		while(m=reg.store.reverse_date_format.exec(q))
 		{
-				dic[m[0]]=[m.index,m.index+m[0].length]
+				dic[m[0]]=[m.index,m.index+(m[0].length-1)]
 				li.push(m);
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(m[0],mask);
@@ -54,7 +54,7 @@ app.init=function(query){
 		}
 		while(m=reg.store.num_date_format.exec(q))
 		{
-				dic[m[0]]=[m.index,m.index+m[0].length]
+				dic[m[0]]=[m.index,m.index+(m[0].length-1)]
 				li.push(m);
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(m[0],mask);
@@ -68,7 +68,7 @@ app.init=function(query){
 		}
 		while(m=reg.store.constant_num_date_format.exec(q))
 		{
-				dic[m[0]]=[m.index,m.index+m[0].length]
+				dic[m[0]]=[m.index,m.index+(m[0].length-1)]
 				li.push(m);
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(m[0],mask);
@@ -82,7 +82,7 @@ app.init=function(query){
 		}
 		while(m=reg.store.mmdd_date_format.exec(q))
 		{
-				dic[m[0]]=[m.index,m.index+m[0].length]
+				dic[m[0]]=[m.index,m.index+(m[0].length-1)]
 				li.push(m);
 				var mask=m[0].replace(/./g,'#');
 				q=q.replace(m[0],mask);
