@@ -7,7 +7,7 @@ var app={
 	"text":"",
 	"original_text":"",
 	"filter":function(source){
-		source.replace(/(\s){2,}|(\n)+|(\r)+|(\t)+/g," ");
+		source=source.replace(/(\s){2,}|(\n)+|(\r)+|(\t)+/g," ");
 		//console.log(source);
 		return source;
 	},

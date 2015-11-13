@@ -44,6 +44,10 @@ var app={
 		app.new_text=currency_output['query'];
 		delete currency_output['query'];
 		app["currency"]=currency_output;
+		
+		//time
+		app.time=time.get(app.new_text);
+		app.new_text=time.new_query();
 
 		//date search output
 
@@ -52,9 +56,7 @@ var app={
 		delete date_output['query'];
 		app["date"]=date_output;
 
-		//time
-		app.time=time.get(app.new_text);
-		app.new_text=time.new_query();
+
 
 		//for emails
 		app.email=email.get(app.new_text);

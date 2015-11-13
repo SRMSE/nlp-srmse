@@ -14,7 +14,10 @@ app.init=function(query){
 		}
 		while(m=reg.store.punc.exec(q))
 		{
-			
+			if(m[0].trim()==="GMT+"){
+				//ignore time zones
+				continue;
+			}
 			if(q[m.index]===" "){
 				//if space is matched
 				m.index=m.index+1;
