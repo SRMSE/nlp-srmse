@@ -14,7 +14,11 @@ app.init=function(query){
 		var tmoney=["lakhs","lakh","million","billion","thousand"];
 		while(m=reg.store.currency.exec(q))
 		{
-			var re=new RegExp(m[0].replace(/\$/g,'\\$'),'g');;
+			if(m[0][0]===" "){
+				m.index=m.index+1;
+				m[0]=m[0].substring(1);
+			}
+			var re=new RegExp(m[0].replace(/\$/g,'\\$'),'g');
 			var mask=m[0].replace(/./g,'#');
 			q=q.replace(re,mask);
 			mask1=m[0];
@@ -35,6 +39,7 @@ app.init=function(query){
 			{
 				while(mp=reg.store.stform.exec(m[0]))      // match currency symbols
 				{
+
 					try{
 						cn=money[mp[0].toLowerCase()];
 						re1=new RegExp(mp[0].replace(/\$/g,'\\$'),'g');     // special case for $ replacement
@@ -54,7 +59,7 @@ app.init=function(query){
 			{
 				mask1=mask1.replace('.','');
 			}
-			dic[m[0]]=[m.index,m.index+m[0].length,mask1];
+			dic[m[0]]=[m.index,m.index+(m[0].length-1),mask1];
 		}			
 		dic["query"]=q;	
 		return dic;

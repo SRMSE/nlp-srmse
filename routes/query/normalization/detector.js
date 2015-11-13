@@ -6,13 +6,13 @@ var units=require('./detectors/units/units').init;
 var email=require('./detectors/email/email').init;
 var digits=require('./detectors/digits/digits').init;
 var url=require('./detectors/url/url').init;
+var paranthesis=require('./detectors/paranthesis/paranthesis').init;
 var quoted=require('./detectors/quoted/quoted').init;
 var abbreviations=require('./detectors/abbreviations/abbreviations').init;
 var bullets=require('./detectors/bullets/bullets').init;
 var regex=require('./regexes');
 var app={
 	"new_text":"",
-	"emails":{},
 	"special_search":{},
 	"unit":{},
 	"currency":{},
@@ -20,11 +20,13 @@ var app={
 	"digits":{},
 	"email":{},
 	"url":{},
+	"paranthesis":{},
 	"quoted":{},
 	"abbreviations":{},
 	"bullets":{},
 	"time":{},
 	"bullet_split":[],
+	"ignore_periods":[],
 	"detect":function(source){
 		var dic={};
 		var m1;
@@ -44,6 +46,7 @@ var app={
 		app.new_text=currency_output['query'];
 		delete currency_output['query'];
 		app["currency"]=currency_output;
+
 		
 		//time
 		app.time=time.get(app.new_text);
@@ -66,14 +69,19 @@ var app={
 		app.url=url.get(app.new_text);
 		app.new_text=url.new_query();
 
-		//for quoted text
-		app.quoted=quoted.get(app.new_text);
-		app.new_text=quoted.new_query();
-
 		//for abbreviations
 		app.abbreviations=abbreviations.get(app.new_text);
 		app.new_text=abbreviations.new_query();
 		
+
+		//for paranthesis text
+		app.paranthesis=paranthesis.get(app.new_text);
+		app.new_text=paranthesis.new_query();
+		
+		//for quoted text
+		app.quoted=quoted.get(app.new_text);
+		app.new_text=quoted.new_query();
+
 		//for bullets
 		app.bullets=bullets.get(app.new_text);
 		app.new_text=bullets.new_query();

@@ -11,22 +11,25 @@ var app={
 				//finding cases like you. I etc
 				continue;
 			}
+			
 			if(m[0][0]===" "){
 				//javascript regexes do no support look behinds
 				//need to change regex for regexes starting with space
 				//will see later
-				dic[m.index+1]=m[0].trim();
+				m.index=m.index+1;
+				m[0]=m[0].substring(1);
 			}
-			else{
-				dic[m.index]=m[0].trim();
-			}
-			var temp=m[0];
+		
+			dic[m.index]=m[0].trim();
+			
+			var temp=m[0].trim();
 			var blanks=temp.replace(/./g,"#");
 			dic["query"]=dic["query"].replace(temp,blanks);
 
 			var d;
 			var ree=/\./g;
 			while(d=ree.exec(m[0].trim())){
+				
 				var t=[];
 				var ind;
 				if(m[0][0]===" "){

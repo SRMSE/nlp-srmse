@@ -4,7 +4,7 @@ var app={
 	"get":function(source){
 		var dic={};
 		dic["query"]=source;
-		while(m=regex.store.quoted.exec(dic["query"])){
+		while(m=regex.store.paranthesis.exec(dic["query"])){
 				var t=[];
 				t.push(m.index);//starting index
 				t.push(m.index+m[0].length);//end index

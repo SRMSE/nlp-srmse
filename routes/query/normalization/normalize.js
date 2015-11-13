@@ -16,10 +16,21 @@ var app={
 		source=source.replace(/&/g,'and');
 		source=source.replace(/viz(\.|)/g,'which is');
 		var m;
-
+		//replacing errant \n like tilak\nayush\n into new lines (periods)
+		while(m=regex.store.newline_list.exec(source)){
+					m[0]=m[0].trim();
+					source=source.replace(m[0],m[0].replace(/\\n/g,' . '));
+					
+					
+		}
 		//regex to replace things like google.At   to google. At
 		while(m=regex.store.word_joined_by_period.exec(source)){
-			source=source.replace(m[0],m[0].split('.').join('. '));
+			m[0]=m[0].trim();
+			if(m[0][0]===m[0][0].toLowerCase()){
+				//it should be google.At not Google.At
+				source=source.replace(m[0],m[0].split('.').join('. '));
+			}
+			
 		}
 		return source;
 	},
@@ -44,15 +55,15 @@ var app={
 			//console.log(output.response.Resources);
 		//})
 		
-		test("found abbr  :"+JSON.stringify(detector.abbreviations));
-		test("found bullets  :"+JSON.stringify(detector.bullets));
-		test("found emails :"+JSON.stringify(detector.email));
-		test("found urls :"+JSON.stringify(detector.url));
-		test("found digits :"+JSON.stringify(detector.digits));
-		test("found dates :"+JSON.stringify(detector.date));
-		test("found currency :"+JSON.stringify(detector.currency));
-		test("found time :"+JSON.stringify(detector.time));
-		test("found special :"+JSON.stringify(detector.special_search));
+		test("found abbr  :"+detector.abbreviations);
+		test("found bullets  :"+detector.bullets);
+		test("found emails :"+detector.email);
+		test("found urls :"+detector.url);
+		test("found digits :"+detector.digits);
+		test("found dates :"+detector.date);
+		test("found currency :"+detector.currency);
+		test("found time :"+detector.time);
+		test("found special :"+detector.special_search);
 		dic={};
 		dic["original_text"]=app.original_text;
 		dic["normalize_text"]=app.text;

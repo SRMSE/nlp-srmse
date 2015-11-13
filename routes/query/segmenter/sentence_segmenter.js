@@ -5,11 +5,21 @@
 var segment_rules=require('./rules');
 var corpus=require('../util/corpus/corpus');
 var prototypes=require("./util/proto");
-var regex=require("./regexes");
+var regex=require("../normalization/regexes");
 var rules=require("./rules").rules;
 prototypes.init();
 var app={
-	"filter_abbr":function(text,periods,abbr_periods){
+	"filter_abbr":function(detected,text,periods,abbr_periods){
+		//we have to remove periods from detected data
+		for(var key in detected){
+			var dic=detected[key];
+			for(var key1 in dic){
+				var li=dic[key1];
+				for(var i=li[0];i<=li[1];i++){
+					delete periods[i];
+				}
+			}
+		}
 		//removes those periods which are part of abbr
 		for (var i = 0; i < abbr_periods.length; i++) {
 			//abbr_periods is a tuple
@@ -30,7 +40,7 @@ var app={
 				//console.log(after_word);
 				if(rules[key](abbr_periods[i],text,corpus,before_word,after_word,middle_period)){
 					//delete the period
-					console.log('detected');
+					console.log('detected'+abbr_periods[i][0]);
 					delete periods[abbr_periods[i][0]];
 					break;
 				}
@@ -41,11 +51,11 @@ var app={
 		periods=Object.keys(periods);//converting to list now
 		return periods;
 	},
-	"segmenter":function(text,periods,bullet_splits){
+	"segmenter":function(text,periods,ques,bullet_splits){
 		var temp=[0];
 		var start=true;
 		var segments=[];
-		temp=temp.concat(periods).concat(bullet_splits).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
+		temp=temp.concat(periods).concat(ques).concat(bullet_splits).sort(app.util.sortNumber);//adding 0 and last index to create pairs of periods
 		for (var i = 0; i < temp.length; i++) {
 			if(start){
 				var ne=parseInt(temp[i]);
@@ -141,20 +151,23 @@ var app={
 		"locate_periods":function(source){
 			//common method to find punc then divide locations
 			  var dic={};
+			  var ques=[];
 			  var m;
+
 				while(m=regex.store.periods.exec(source)){
 					//punc can be . ! ? .. !? etc all combinations
 					if(m[0][0].trim()==="."){
 						dic[m.index+m[0].length-1]=m[0].trim();
 					}
 					else if(m[0][0].trim()==="?" || m[0][0].trim()==="!"){
-						app.ques.push(m.index+m[0].length-1);
+						ques.push(m.index+m[0].length-1);
 					}
 				
 					
 					
 				}
-				return dic;
+				//return periods and ques in tuple
+				return [dic,ques];
 			}
 
 	}
@@ -164,11 +177,15 @@ var app={
 };
 function main(dic){
 	console.log(dic);
-	var periods=app.util.locate_periods(dic.detect.original_text);
+	var periods=app.util.locate_periods(dic.normalize_text);
+	var ques=periods[1];
+	periods=periods[0];
 	console.log(periods);
 	var abbr_periods=dic.detect.abbreviations.abbr_periods;
-	var filtered_periods=app.filter_abbr(dic.normalize_text,periods,abbr_periods);
-	var segments=app.segmenter(dic.normalize_text,filtered_periods,dic.detect.bullet_split);
+	console.log("abbr_periods "+abbr_periods);
+	var filtered_periods=app.filter_abbr(dic.detect,dic.normalize_text,periods,abbr_periods);
+	console.log(filtered_periods);
+	var segments=app.segmenter(dic.normalize_text,filtered_periods,ques,dic.detect.bullet_split);
 	console.log(segments);
 	
 	console.log(filtered_periods);

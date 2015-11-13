@@ -9,7 +9,7 @@ var app={
 					//replace emails to blank in this search to avoid getting their periods
 					var t=[];
 					t.push(m.index);//starting index
-					t.push(m.index+m[0].length);//end index
+					t.push(m.index+(m[0].length-1));//end index
 					var blanks=m[0].replace(/./g,'#');
 					dic["query"]=dic["query"].replace(m[0],blanks);
 					dic[m[0].trim()]=t;

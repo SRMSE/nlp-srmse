@@ -3,6 +3,13 @@
 //these rules return true when period has to be removed.That is no segmentation at that point
 //keys are the examples taken from golden rules.txt
 var rules={
+	"I can see Mt. Fuji from here.":function(tup,text,corpus,word_before_abbr,word_after_abbr,middle_dot){
+		var abbr=tup[1].replace(/\./g,'');
+		if(abbr!==undefined && abbr[0]===abbr[0].toUpperCase() && abbr.substring(1)===abbr.substring(1).toLowerCase() && corpus.corpus.isSalutation(abbr)){
+			console.log('0');
+			return true;
+		}
+	},
 	"It is Jr.'s book":function(tup,text,corpus,word_before_abbr,word_after_abbr,middle_dot){
 		var abbr=tup[1].replace(/\./g,'');
 		if(abbr!==undefined && abbr.indexOf("'s")>0){
@@ -56,7 +63,7 @@ var rules={
 		if(abbr!==undefined && abbr===abbr.toUpperCase()){
 			var period_location=tup[0];
 			if(word_before_abbr===word_before_abbr.toLowerCase() && word_after_abbr[0]===word_after_abbr[0].toUpperCase() && middle_dot){
-				console.log('4');
+				console.log('5');
 				return true;
 			}
 
@@ -68,7 +75,7 @@ var rules={
 		if(abbr!==undefined && abbr.length===1 && abbr===abbr.toUpperCase()){
 			var period_location=tup[0];
 			if(word_before_abbr[0]===word_before_abbr[0].toUpperCase() && word_after_abbr[0]===word_after_abbr[0].toUpperCase()){
-				console.log('5');
+				console.log('6');
 				return true;
 			}
 
@@ -87,7 +94,7 @@ var rules={
 			word_after_abbr=word_after_abbr.replace(/./g,'');
 			var num=parseInt(word_after_abbr);
 			if(word_before_abbr===word_before_abbr.toLowerCase() && num!==NaN){
-				console.log('5');
+				console.log('7');
 				return true;
 			}
 
@@ -99,7 +106,7 @@ var rules={
 		if(abbr!==undefined && abbr===abbr.toLowerCase()){
 			var period_location=tup[0];
 			if(word_before_abbr===word_before_abbr.toLowerCase() && word_after_abbr===word_after_abbr.toLowerCase()){
-				console.log('6');
+				console.log('8');
 				return true;
 			}
 
@@ -111,7 +118,7 @@ var rules={
 		if(abbr!==undefined ){
 			var period_location=tup[0];
 			if(word_before_abbr===word_before_abbr.toLowerCase() && word_after_abbr===word_after_abbr.toLowerCase() && corpus.corpus.isStopWord(word_after_abbr) && !corpus.corpus.isInterogative(word_after_abbr)){
-				console.log('7');
+				console.log('9');
 				return true;
 			}
 
@@ -124,7 +131,7 @@ var rules={
 			var period_location=tup[0];
 			console.log(middle_dot);
 			if(word_before_abbr===word_before_abbr.toLowerCase() && word_before_abbr===word_before_abbr.toUpperCase() && word_after_abbr[0]===word_after_abbr[0].toUpperCase() && middle_dot){
-				console.log('8');
+				console.log('10');
 				return true;
 			}
 
