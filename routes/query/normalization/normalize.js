@@ -32,6 +32,29 @@ var app={
 			}
 			
 		}
+				while(m=regex.store.apostrophe.exec(source)){
+			m[0]=m[0].trim();
+			//console.log(m[0]+"detector");
+			if(m[0].indexOf("'s")>=0){
+				source=source.replace("'s",' is');
+			}
+			else if(m[0].indexOf("'t")>=0){
+				source=source.replace("n't",' not');
+			}
+			else if(m[0].indexOf("'re")>=0){
+				source=source.replace("'re",' are');
+			}
+			else if(m[0].indexOf("'ll")>=0){
+				source=source.replace("'ll",' will');
+			}
+			else if(m[0].indexOf("'ve")>=0){
+				source=source.replace("'ve",' have');
+			}
+			else if(m[0].indexOf("'d")>=0){
+				source=source.replace("'d",' had');
+			}
+			
+		}
 		return source;
 	},
 	"normalize":function(source){
