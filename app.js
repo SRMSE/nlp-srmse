@@ -30,7 +30,9 @@ app.configure('production', function(){
 // Routes
 app.get('/', index.index);
 //app.get('/sentence_segmenter',routes.sentence_segmenter);
-app.get('/query',query.index);
+app.get('/query/std',query.index);
+app.get('/query/normalize',query.normalize);
+app.get('/query/segment',query.segment);
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });

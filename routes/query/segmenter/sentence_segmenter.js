@@ -189,5 +189,7 @@ function main(dic){
 	console.log(segments);
 	
 	console.log(filtered_periods);
+	dic["detect"]['segments']=segments;
+	return dic;
 }
 exports.segment=main;
