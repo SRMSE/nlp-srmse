@@ -74,6 +74,9 @@ var app={
 		//clears the app dic for next req
 		app.text="";
 		app.original_text="";
+		app.detect={};
+		app.normalize_text={};
+		app.original_text={};
 	}
 };
 
