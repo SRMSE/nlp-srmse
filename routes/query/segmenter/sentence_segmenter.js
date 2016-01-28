@@ -40,7 +40,7 @@ var app={
 				//console.log(after_word);
 				if(rules[key](abbr_periods[i],text,corpus,before_word,after_word,middle_period)){
 					//delete the period
-					console.log('detected'+abbr_periods[i][0]);
+					//console.log('detected'+abbr_periods[i][0]);
 					delete periods[abbr_periods[i][0]];
 					break;
 				}
@@ -66,11 +66,18 @@ var app={
 			}
 			
 				if(temp[i+1]!==undefined){
-					segments.push(text.substring(ne,(parseInt(temp[i+1])+1)));
+					var val=text.substring(ne,(parseInt(temp[i+1])+1)).trim();
+					if(val!=="" && val!=="."){
+						segments.push(val);
+					}
+					
 				}
 				else{
 					if(ne<=text.length-1){
-						segments.push(text.substring(ne,text.length));
+						var val=text.substring(ne,text.length).trim();
+						if(val!=="" && val!=="."){ //errant dots
+							segments.push(val);
+						}
 
 					}
 				}

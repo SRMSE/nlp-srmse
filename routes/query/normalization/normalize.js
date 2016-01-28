@@ -1,5 +1,7 @@
 var regex=require('./regexes');
 var detector=require('./detector').init;
+var contraction=require("./normalizers/Contractions/contractions.js").init;
+var diacritics=require("./normalizers/diacritics/diacritics.js");
 function test(d){
 	console.log(d+"\n");
 }
@@ -13,6 +15,9 @@ var app={
 	},
 	"expand":function(source){
 		//will replace things like & to and viz. to which is etc.
+		source=source.replace(/(\.\s|\.){2,}(\s)+[a-z]/g,""); // . . . was   ellipsis followed by small case
+		source=source.replace(/(\.\s|\.){2,}(\s)+(?=[A-Z])/g,". ");
+		source=source.replace(/(\.\s|\.){2,}(\s)+(|$)/g,". ");
 		source=source.replace(/&/g,'and');
 		source=source.replace(/viz(\.|)/g,'which is');
 		var m;
@@ -32,29 +37,7 @@ var app={
 			}
 			
 		}
-				while(m=regex.store.apostrophe.exec(source)){
-			m[0]=m[0].trim();
-			//console.log(m[0]+"detector");
-			if(m[0].indexOf("'s")>=0){
-				source=source.replace("'s",' is');
-			}
-			else if(m[0].indexOf("'t")>=0){
-				source=source.replace("n't",' not');
-			}
-			else if(m[0].indexOf("'re")>=0){
-				source=source.replace("'re",' are');
-			}
-			else if(m[0].indexOf("'ll")>=0){
-				source=source.replace("'ll",' will');
-			}
-			else if(m[0].indexOf("'ve")>=0){
-				source=source.replace("'ve",' have');
-			}
-			else if(m[0].indexOf("'d")>=0){
-				source=source.replace("'d",' had');
-			}
-			
-		}
+				
 		return source;
 	},
 	"normalize":function(source){
@@ -66,7 +49,8 @@ var app={
 
 		app.text=app.filter(app.text);
 		app.text=app.expand(app.text);
-
+		app.text=contraction.getFullForm(app.text);
+		app.text=diacritics.removeDiacritics(app.text);
 		test("After normalization  :  "+app.text);
 
 		//starting detecting tokens in text

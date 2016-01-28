@@ -12,20 +12,20 @@ exports.index=function(req, res){
 
   //segmentation into sentences
   dic=segmenter.segment(dic);
-  res.write(JSON.stringify(dic));
+  res.write(JSON.stringify(dic,null,2));
   res.end();
 };
 exports.segment=function(req,res){
 	var source=req.query.q;
 	var d=normalization.normalize(source);
 	dic=segmenter.segment(dic);
-	res.write(JSON.stringify(dic));
+	res.write(JSON.stringify(dic,null,2));
 	res.end();
 };
 exports.normalize=function(req,res){
 	var source=req.query.q;
 	var d=normalization.normalize(source);
-	res.write(JSON.stringify(d));
+	res.write(JSON.stringify(d,null,2));
 	res.end();
 };
 

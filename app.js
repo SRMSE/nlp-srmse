@@ -6,18 +6,18 @@
 var express = require('express');
 var index=require('./routes/index');
 var query=require('./routes/query');
-
+global_path=__dirname; //used by all routes for accessing parent dir path
 var app = module.exports = express.createServer();
 
 // Configuration
 
 app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
+  app.use(express.static(__dirname + '/public'));
   app.use(express.bodyParser());
+  app.use(express.logger('dev'));
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+ 
 });
 
 app.configure('development', function(){
